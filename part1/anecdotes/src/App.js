@@ -10,10 +10,12 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
   ];
 
+  // Use useState to keep track of variables that change state.
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
   const [mostVotesIdx, setMostVotesIdx] = useState(0);
 
+  // Button click handler functions make use of setState.
   const getNewAnecdote = () => {
     let newIdx = selected;
     while (newIdx === selected) {

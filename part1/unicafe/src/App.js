@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const Header = ({ text }) => <h1>{text}</h1>;
 
+// Useful generic button component.
 const Button = ({ handleClick, text }) => {
   return (
     <button onClick={handleClick}>
@@ -10,6 +11,7 @@ const Button = ({ handleClick, text }) => {
   );
 };
 
+// Create a HTML table row.
 const Statistic = ({ text, value }) => {
   return (
     <tr>
@@ -19,13 +21,16 @@ const Statistic = ({ text, value }) => {
   );
 };
 
+// Create a HTML table.
 const Statistics = (props) => {
   const { good, neutral, bad } = props;
 
+  // If all values are zero, show a placeholder message.
   if (good === 0 && neutral === 0 && bad === 0) {
     return <div>No feedback given</div>;
   }
 
+  // Calculate some aggregate statistics.
   const total = good + neutral + bad;
   const average = (good - bad) / total;
   const positive = good / total * 100;
@@ -45,11 +50,12 @@ const Statistics = (props) => {
 };
 
 const App = () => {
-  // Save clicks of each button to its own state
+  // Save clicks of each button to its own state variable
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  // Button click handler functions for each state.
   const handleGood = () => setGood(good + 1);
   const handleNeutral = () => setNeutral(neutral + 1);
   const handleBad = () => setBad(bad + 1);

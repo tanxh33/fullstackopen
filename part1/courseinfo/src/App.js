@@ -4,6 +4,7 @@ const Header = (props) => {
   return <h1>{props.course}</h1>;
 };
 
+// Takes in props containing all the course information.
 const Content = ({ parts }) => {
   return (
     <div>
@@ -14,6 +15,7 @@ const Content = ({ parts }) => {
   );
 };
 
+// Component displaying a single part.
 const Part = ({ name, exercises }) => {
   return (
     <p>
