@@ -1,31 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import AddEntryForm from './components/AddEntryForm';
 import Search from './components/Search';
 import Persons from './components/Persons';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    {
-      id: 1,
-      name: 'Emma Watson',
-      phoneNum: '007-1234567',
-    },
-    {
-      id: 2,
-      name: 'Hermione Granger',
-      phoneNum: '343-2401028',
-    },
-    {
-      id: 3,
-      name: 'Luna Lovegood',
-      phoneNum: '123-9999999',
-    },
-  ]);
+  const [persons, setPersons] = useState([]);
 
   // States keeping track of strings within input text fields.
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // By default, effects run after every completed render, but
+  // you can choose to fire it only when certain values have changed.
+  // An empty array as the second parameter makes it run only on the
+  // first render of the component.
+  useEffect(() => {
+    console.log('effect');
+    // Fetch data from the server, then set it to the application state.
+
+    // Using .then() to get a promise:
+    // axios
+    //   .get('http://localhost:3001/persons')
+    //   .then((response) => {
+    //     console.log('promise fulfilled');
+    //     setPersons(response.data);
+    //   });
+
+    // Using async/await syntax:
+    const fetchPersons = async () => {
+      const response = await axios.get('http://localhost:3001/persons');
+      setPersons(response.data);
+    };
+    fetchPersons();
+  }, []);
+
+  console.log('render', persons.length, 'persons'); // Check when re-rendering
 
   const handleNameInputChange = (e) => {
     setNewName(e.target.value);
@@ -54,7 +65,7 @@ const App = () => {
     const personObject = {
       id: persons.length + 1,
       name: newName,
-      phoneNum: newPhone,
+      number: newPhone,
     };
 
     setPersons(persons.concat(personObject));

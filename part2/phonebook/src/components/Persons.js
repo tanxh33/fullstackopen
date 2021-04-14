@@ -10,7 +10,7 @@ const Persons = ({ persons }) => (
           key={person.id}
           id={person.id}
           name={person.name}
-          phoneNum={person.phoneNum}
+          number={person.number}
         />
       ),
     )}
