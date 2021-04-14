@@ -21,6 +21,8 @@ const App = () => {
       phoneNum: '123-9999999',
     },
   ]);
+
+  // States keeping track of strings within input text fields.
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,14 +39,17 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
+  // Form submission handler.
   const addPerson = (e) => {
     e.preventDefault(); // Prevent HTML form submission
+
+    // Simple error handling.
+    if (newName === '' || newPhone === '') return;
     if (persons.find((person) => person.name === newName)) {
       // eslint-disable-next-line
       alert(`${newName} is already in the phonebook`);
       return;
     }
-    if (newName === '' || newPhone === '') return;
 
     const personObject = {
       id: persons.length + 1,
@@ -57,6 +62,7 @@ const App = () => {
     setNewPhone('');
   };
 
+  // If there is a search term, filter persons[] based on the search term.
   const personsToShow = searchTerm === ''
     ? persons
     : persons.filter(
