@@ -32,15 +32,15 @@ const Country = ({ country, initOpen = false }) => {
     return (
       <div>
         {country.name}
-        <button type="submit" onClick={toggleOpen}>show</button>
+        <Button text="show" clickHandler={toggleOpen} />
       </div>
     );
   }
 
   return (
     <div>
-      <button type="submit" onClick={toggleOpen}>hide</button>
       <h1>{country.name}</h1>
+      <Button text="hide" clickHandler={toggleOpen} />
       <div>
         {`Capital: ${country.capital}`}
       </div>
@@ -59,6 +59,10 @@ const Country = ({ country, initOpen = false }) => {
     </div>
   );
 };
+
+const Button = ({ text, clickHandler }) => (
+  <button type="submit" onClick={clickHandler}>{text}</button>
+);
 
 const App = () => {
   const [countries, setCountries] = useState([]);
@@ -110,6 +114,11 @@ Country.propTypes = {
 
 Country.defaultProps = {
   initOpen: false,
+};
+
+Button.propTypes = {
+  text: PropTypes.string.isRequired,
+  clickHandler: PropTypes.func.isRequired,
 };
 
 export default App;
