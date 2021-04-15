@@ -23,11 +23,26 @@ const Countries = ({ countries }) => {
 
 const Country = ({ country, initOpen = false }) => {
   const [open, setOpen] = useState(initOpen);
+  const [weather, setWeather] = useState();
+
+  useEffect(() => {
+    // Run on component load.
+    const getWeather = async () => {
+    // Fetch country weather data from OpenWeather API.
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${country.capital}&appid=${process.env.REACT_APP_API_KEY}&units=metric`;
+      const response = await fetch(url);
+      const responseData = await response.json();
+      setWeather(responseData);
+    };
+    getWeather();
+  }, []);
 
   const toggleOpen = () => {
-    setOpen(!open);
+    const newState = !open;
+    setOpen(newState);
   };
 
+  // Unopened component shows only the country name.
   if (!open) {
     return (
       <div>
@@ -37,6 +52,7 @@ const Country = ({ country, initOpen = false }) => {
     );
   }
 
+  // Opened component shows more country information
   return (
     <div>
       <h1>{country.name}</h1>
@@ -56,12 +72,41 @@ const Country = ({ country, initOpen = false }) => {
         ))}
       </ul>
       <img src={country.flag} alt={`${country.name} flag`} width="200" />
+      {weather
+        ? <WeatherInfo location={country.capital} weather={weather} />
+        : <div>Weather information unavailable</div>}
     </div>
   );
 };
 
 const Button = ({ text, clickHandler }) => (
   <button type="submit" onClick={clickHandler}>{text}</button>
+);
+
+const WeatherInfo = ({ location, weather }) => (
+  <div>
+    <h2>{`Weather in ${location}`}</h2>
+    <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={`${weather.weather[0].main}`} />
+    <div>
+      <strong>Current condition:</strong>
+      {` ${weather.weather[0].main} (${weather.weather[0].description})`}
+    </div>
+    <div>
+      <strong>Temperature:</strong>
+      {` ${weather.main.temp} °C (${weather.main.temp_min} min ~ ${weather.main.temp_max} max)`}
+    </div>
+    <div>
+      <strong>Feels like:</strong>
+      {` ${weather.main.feels_like} °C`}
+    </div>
+    <div>
+      <strong>Wind:</strong>
+      {` ${weather.wind.speed} m/s, ${weather.wind.deg}°`}
+    </div>
+    <div>
+      {`Updated at ${new Date(weather.dt * 1000).toISOString().slice(0, 19).replace('T', ' ')} GMT`}
+    </div>
+  </div>
 );
 
 const App = () => {
@@ -92,8 +137,7 @@ const App = () => {
     <div>
       <h1>Countries</h1>
       <div>
-        Find countries:
-        {' '}
+        {'Find countries: '}
         <input value={searchTerm} onChange={handleSearch} />
       </div>
       <Countries countries={countriesToShow} />
@@ -119,6 +163,12 @@ Country.defaultProps = {
 Button.propTypes = {
   text: PropTypes.string.isRequired,
   clickHandler: PropTypes.func.isRequired,
+};
+
+WeatherInfo.propTypes = {
+  location: PropTypes.string.isRequired,
+  // eslint-disable-next-line
+  weather: PropTypes.object.isRequired,
 };
 
 export default App;
