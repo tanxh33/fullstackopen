@@ -10,39 +10,55 @@ const Countries = ({ countries }) => {
     return <p>Too many matches, specify another filter.</p>;
   }
   if (countries.length === 1) {
-    return <Country country={countries[0]} />;
+    return <Country country={countries[0]} initOpen />;
   }
   return (
     <div>
       {countries.map((country) => (
-        <div key={country.numericCode}>
-          {country.name}
-        </div>
+        <Country key={country.numericCode} country={country} />
       ))}
     </div>
   );
 };
 
-const Country = ({ country }) => (
-  <div>
-    <h1>{country.name}</h1>
+const Country = ({ country, initOpen = false }) => {
+  const [open, setOpen] = useState(initOpen);
+
+  const toggleOpen = () => {
+    setOpen(!open);
+  };
+
+  if (!open) {
+    return (
+      <div>
+        {country.name}
+        <button type="submit" onClick={toggleOpen}>show</button>
+      </div>
+    );
+  }
+
+  return (
     <div>
-      {`Capital: ${country.capital}`}
+      <button type="submit" onClick={toggleOpen}>hide</button>
+      <h1>{country.name}</h1>
+      <div>
+        {`Capital: ${country.capital}`}
+      </div>
+      <div>
+        {`Population: ${country.population}`}
+      </div>
+      <h2>Languages</h2>
+      <ul>
+        {country.languages && country.languages.map((lang) => (
+          <li key={lang.iso639_1}>
+            {`${lang.name}, ${lang.nativeName}`}
+          </li>
+        ))}
+      </ul>
+      <img src={country.flag} alt={`${country.name} flag`} width="200" />
     </div>
-    <div>
-      {`Population: ${country.population}`}
-    </div>
-    <h2>Languages</h2>
-    <ul>
-      {country.languages && country.languages.map((lang) => (
-        <li key={lang.iso639_1}>
-          {`${lang.name}, ${lang.nativeName}`}
-        </li>
-      ))}
-    </ul>
-    <img src={country.flag} alt={`${country.name} flag`} width="200" />
-  </div>
-);
+  );
+};
 
 const App = () => {
   const [countries, setCountries] = useState([]);
@@ -89,6 +105,11 @@ Countries.propTypes = {
 Country.propTypes = {
   // eslint-disable-next-line
   country: PropTypes.object.isRequired,
+  initOpen: PropTypes.bool,
+};
+
+Country.defaultProps = {
+  initOpen: false,
 };
 
 export default App;
