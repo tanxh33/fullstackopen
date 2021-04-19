@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import AddEntryForm from './components/AddEntryForm';
 import Search from './components/Search';
 import Persons from './components/Persons';
+import personService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -17,26 +17,16 @@ const App = () => {
   // An empty array as the second parameter makes it run only on the
   // first render of the component.
   useEffect(() => {
-    console.log('effect');
+    // console.log('effect');
     // Fetch data from the server, then set it to the application state.
-
-    // Using .then() to get a promise:
-    // axios
-    //   .get('http://localhost:3001/persons')
-    //   .then((response) => {
-    //     console.log('promise fulfilled');
-    //     setPersons(response.data);
-    //   });
-
-    // Using async/await syntax:
-    const fetchPersons = async () => {
-      const response = await axios.get('http://localhost:3001/persons');
-      setPersons(response.data);
-    };
-    fetchPersons();
+    personService
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons);
+      });
   }, []);
 
-  console.log('render', persons.length, 'persons'); // Check when re-rendering
+  // console.log('render', persons.length, 'persons'); // Check when re-rendering
 
   const handleNameInputChange = (e) => {
     setNewName(e.target.value);
@@ -50,15 +40,38 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
+  const updatePerson = (id, changedPerson) => {
+    personService
+      .update(id, changedPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.map((person) => (person.id !== id ? person : returnedPerson)));
+        setNewName('');
+        setNewPhone('');
+      })
+      .catch((error) => {
+        console.error(error);
+        // eslint-disable-next-line
+        alert(`The person ${changedPerson.name} has already been deleted from the server`);
+        setPersons(persons.map((person) => person.id !== id));
+        setNewName('');
+        setNewPhone('');
+      });
+  };
+
   // Form submission handler.
   const addPerson = (e) => {
     e.preventDefault(); // Prevent HTML form submission
 
     // Simple error handling.
     if (newName === '' || newPhone === '') return;
-    if (persons.find((person) => person.name === newName)) {
+
+    // Update phone number if name already exists
+    const personExists = persons.find((person) => person.name === newName);
+    if (personExists) {
       // eslint-disable-next-line
-      alert(`${newName} is already in the phonebook`);
+      if (window.confirm(`${personExists.name} is already added to phonebook, replace the old number with a new one?`)) {
+        updatePerson(personExists.id, { ...personExists, number: newPhone });
+      }
       return;
     }
 
@@ -68,9 +81,31 @@ const App = () => {
       number: newPhone,
     };
 
-    setPersons(persons.concat(personObject));
-    setNewName('');
-    setNewPhone('');
+    // Update the backend database server:
+    personService
+      .create(personObject)
+      .then((returnedNote) => {
+        setPersons(persons.concat(returnedNote));
+        setNewName('');
+        setNewPhone('');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const deletePerson = (id, name) => {
+    // eslint-disable-next-line
+    if (window.confirm(`Delete ${name}?`)) {
+      personService
+        .deleteEntry(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   // If there is a search term, filter persons[] based on the search term.
@@ -93,7 +128,7 @@ const App = () => {
         submitHandler={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deleteHandler={deletePerson} />
     </div>
   );
 };

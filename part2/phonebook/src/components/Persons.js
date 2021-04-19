@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Person from './Person';
 
-const Persons = ({ persons }) => (
+const Persons = ({ persons, deleteHandler }) => (
   <ul>
     {persons.map(
       (person) => (
@@ -11,6 +11,7 @@ const Persons = ({ persons }) => (
           id={person.id}
           name={person.name}
           number={person.number}
+          deleteHandler={deleteHandler}
         />
       ),
     )}
@@ -20,6 +21,7 @@ const Persons = ({ persons }) => (
 Persons.propTypes = {
   // eslint-disable-next-line
   persons: PropTypes.array.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
 };
 
 export default Persons;
