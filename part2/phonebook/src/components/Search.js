@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Search = ({ searchTerm, searchHandler }) => (
-  <div>
-    Search:
-    <br />
+  <div className="mb-s">
+    <div className="mb-xs">Search:</div>
     <input value={searchTerm} onChange={searchHandler} />
   </div>
 );
