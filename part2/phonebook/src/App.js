@@ -3,6 +3,7 @@ import AddEntryForm from './components/AddEntryForm';
 import Search from './components/Search';
 import Persons from './components/Persons';
 import Notification from './components/Notification';
+import Footer from './components/Footer';
 import personService from './services/persons';
 import './index.css';
 
@@ -143,21 +144,24 @@ const App = () => {
     );
 
   return (
-    <div style={appBodyStyle}>
-      <h1 className="mb-xs">Phonebook</h1>
-      <Notification message={notification.message} type={notification.type} />
-      <Search searchTerm={searchTerm} searchHandler={handleSearchInputChange} />
-      <h2>Add a new entry</h2>
-      <AddEntryForm
-        newName={newName}
-        newPhone={newPhone}
-        nameHandler={handleNameInputChange}
-        phoneHandler={handlePhoneInputChange}
-        submitHandler={addPerson}
-      />
-      <h2 className="mb-xs">Numbers</h2>
-      <Persons persons={personsToShow} deleteHandler={deletePerson} />
-    </div>
+    <>
+      <div style={appBodyStyle}>
+        <h1 className="mb-xs">Phonebook</h1>
+        <Notification message={notification.message} type={notification.type} />
+        <Search searchTerm={searchTerm} searchHandler={handleSearchInputChange} />
+        <h2>Add a new entry</h2>
+        <AddEntryForm
+          newName={newName}
+          newPhone={newPhone}
+          nameHandler={handleNameInputChange}
+          phoneHandler={handlePhoneInputChange}
+          submitHandler={addPerson}
+        />
+        <h2 className="mb-xs">Numbers</h2>
+        <Persons persons={personsToShow} deleteHandler={deletePerson} />
+      </div>
+      <Footer />
+    </>
   );
 };
 
