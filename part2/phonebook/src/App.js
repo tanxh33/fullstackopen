@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import AddEntryForm from './components/AddEntryForm';
 import Search from './components/Search';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
 import personService from './services/persons';
+import './index.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +13,14 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [notification, setNotification] = useState({ message: null, type: '' });
+  const notificationDuration = 5000;
+
+  const appBodyStyle = {
+    margin: 'auto',
+    padding: '2rem',
+  };
 
   // By default, effects run after every completed render, but
   // you can choose to fire it only when certain values have changed.
@@ -26,8 +36,6 @@ const App = () => {
       });
   }, []);
 
-  // console.log('render', persons.length, 'persons'); // Check when re-rendering
-
   const handleNameInputChange = (e) => {
     setNewName(e.target.value);
   };
@@ -40,6 +48,13 @@ const App = () => {
     setSearchTerm(e.target.value);
   };
 
+  const setTempNotification = (message, type, duration) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification({ message: null, type: '' });
+    }, duration);
+  };
+
   const updatePerson = (id, changedPerson) => {
     personService
       .update(id, changedPerson)
@@ -47,12 +62,16 @@ const App = () => {
         setPersons(persons.map((person) => (person.id !== id ? person : returnedPerson)));
         setNewName('');
         setNewPhone('');
+        setTempNotification(`Updated ${newName} contact`, 'success', notificationDuration);
       })
       .catch((error) => {
         console.error(error);
-        // eslint-disable-next-line
-        alert(`The person ${changedPerson.name} has already been deleted from the server`);
-        setPersons(persons.map((person) => person.id !== id));
+        setTempNotification(
+          `The person ${changedPerson.name} has already been deleted from the server`,
+          'error',
+          notificationDuration,
+        );
+        setPersons(persons.filter((person) => person.id !== id));
         setNewName('');
         setNewPhone('');
       });
@@ -63,7 +82,10 @@ const App = () => {
     e.preventDefault(); // Prevent HTML form submission
 
     // Simple error handling.
-    if (newName === '' || newPhone === '') return;
+    if (newName === '' || newPhone === '') {
+      setTempNotification('Fields need to be filled in', 'error', notificationDuration);
+      return;
+    }
 
     // Update phone number if name already exists
     const personExists = persons.find((person) => person.name === newName);
@@ -88,9 +110,11 @@ const App = () => {
         setPersons(persons.concat(returnedNote));
         setNewName('');
         setNewPhone('');
+        setTempNotification(`Added ${newName}`, 'success', notificationDuration);
       })
       .catch((error) => {
         console.error(error);
+        setTempNotification('Error adding new entry', 'error', notificationDuration);
       });
   };
 
@@ -101,9 +125,12 @@ const App = () => {
         .deleteEntry(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
+          setTempNotification(`Deleted ${name}`, 'success', notificationDuration);
         })
         .catch((error) => {
           console.log(error);
+
+          setTempNotification(`Error deleting ${name}`, 'error', notificationDuration);
         });
     }
   };
@@ -116,8 +143,9 @@ const App = () => {
     );
 
   return (
-    <div>
-      <h1>Phonebook</h1>
+    <div style={appBodyStyle}>
+      <h1 className="mb-xs">Phonebook</h1>
+      <Notification message={notification.message} type={notification.type} />
       <Search searchTerm={searchTerm} searchHandler={handleSearchInputChange} />
       <h2>Add a new entry</h2>
       <AddEntryForm
@@ -127,7 +155,7 @@ const App = () => {
         phoneHandler={handlePhoneInputChange}
         submitHandler={addPerson}
       />
-      <h2>Numbers</h2>
+      <h2 className="mb-xs">Numbers</h2>
       <Persons persons={personsToShow} deleteHandler={deletePerson} />
     </div>
   );

@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 const Person = ({
   id, name, number, deleteHandler,
 }) => (
-  <li>
+  <li className="mb-xs">
     {`${id} ${name} ${number} `}
     <button
       type="button"
       onClick={() => deleteHandler(id, name)}
     >
-      delete
+      Delete
     </button>
   </li>
 );
