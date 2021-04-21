@@ -1,9 +1,11 @@
 // Import Node's built-in web-server module. ES6 modules coming soon?
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json()); // use json-parser middleware
+app.use(cors());
 
 // Add request body to morgan middleware logging output
 morgan.token('reqBody', (req) => JSON.stringify(req.body));
