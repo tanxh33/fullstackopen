@@ -4,10 +4,11 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const app = express();
-app.use(express.json()); // use json-parser middleware
+app.use(express.static('build'));
 app.use(cors());
+app.use(express.json()); // use json-parser middleware
 
-// Add request body to morgan middleware logging output
+// Morgan middleware logging output
 morgan.token('reqBody', (req) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :reqBody'));
 
