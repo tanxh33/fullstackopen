@@ -33,10 +33,12 @@ let persons = [
   },
 ];
 
-const generateId = (idArray) => {
+// Generate an ID using Math.random()
+const generateId = (idArray = []) => {
   const upperBound = 1048575;
   let newId = Math.floor(Math.random() * upperBound + 1);
 
+  // Recursively call this function again if the ID already exists
   if (idArray.includes(newId)) {
     newId = generateId(idArray);
   }
@@ -44,12 +46,12 @@ const generateId = (idArray) => {
   return newId;
 };
 
-// Server homepage
+// GET server homepage
 app.get('/', (request, response) => {
   response.send('<h1>Hello there!</h1>');
 });
 
-// Info page
+// GET info page
 app.get('/info', (request, response) => {
   response.send(`
     <div>Phone book has info for ${persons.length} people</div>
@@ -88,12 +90,14 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const { body } = request;
 
+  // Simple error handling for empty name or phone number
   if (!(body.name && body.number)) {
     return response.status(400).json({
       error: 'content missing',
     });
   }
 
+  // Error handling for a name that already exists
   if (persons.map((person) => person.name).includes(body.name)) {
     return response.status(400).json({
       error: 'name must be unique',
@@ -106,8 +110,10 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
   };
 
+  // Update our "database"
   persons = persons.concat(newPerson);
 
+  // Return the new person in a response
   response.json(newPerson);
 });
 
