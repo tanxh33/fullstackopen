@@ -1,9 +1,13 @@
 // Import Node's built-in web-server module. ES6 modules coming soon?
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
+app.use(express.json()); // use json-parser middleware
 
-app.use(express.json());
+// Add request body to morgan middleware logging output
+morgan.token('reqBody', (req) => JSON.stringify(req.body));
+app.use(morgan(':method :url :status :response-time ms - :res[content-length] :reqBody'));
 
 let persons = [
   {
@@ -45,6 +49,10 @@ const generateId = (idArray = []) => {
 
   return newId;
 };
+
+// --------------
+// ROUTES
+// --------------
 
 // GET server homepage
 app.get('/', (request, response) => {
@@ -116,6 +124,12 @@ app.post('/api/persons', (request, response) => {
   // Return the new person in a response
   response.json(newPerson);
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
+app.use(unknownEndpoint);
 
 // Without Express:
 // Event handler registered to server object, called every time
