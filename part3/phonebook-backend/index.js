@@ -142,7 +142,7 @@ app.use(unknownEndpoint);
 //   response.end(JSON.stringify(notes));
 // });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   // eslint-disable-next-line
   console.log(`Server running on port ${PORT}`);

@@ -16,9 +16,14 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "async-file": "^2.0.2",
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "nodemon": "^2.0.7"
+    "heroku": "^7.52.0",
+    "nodemon": "^2.0.7",
+    "phoenix": "^1.5.8",
+    "valid-url": "^1.0.9",
+    "ws": "^7.4.5"
   }
 }
