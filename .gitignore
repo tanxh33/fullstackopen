@@ -7,6 +7,7 @@
 /part2/phonebook/node_modules/
 /part2/countries/node_modules/
 /part3/phonebook-backend/node_modules/
+/part3/phonebook-backend/build/
 
 /.pnp
 .pnp.js
