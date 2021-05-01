@@ -63,7 +63,7 @@ const App = () => {
         setPersons(persons.map((person) => (person.id !== id ? person : returnedPerson)));
         setNewName('');
         setNewPhone('');
-        setTempNotification(`Updated ${newName} contact`, 'success', notificationDuration);
+        setTempNotification(`Updated contact ${newName}`, 'success', notificationDuration);
       })
       .catch((error) => {
         console.error(error);
@@ -114,8 +114,9 @@ const App = () => {
         setTempNotification(`Added ${newName}`, 'success', notificationDuration);
       })
       .catch((error) => {
-        console.error(error);
-        setTempNotification('Error adding new entry', 'error', notificationDuration);
+        // Access the error message returned from backend (Mongoose)
+        console.error(error.response.data.error);
+        setTempNotification(String(error.response.data.error), 'error', notificationDuration);
       });
   };
 

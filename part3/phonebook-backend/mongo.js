@@ -9,6 +9,8 @@ const password = process.argv[2];
 
 const url = `mongodb+srv://woodencube:${password}@phonebook-app.mo4hv.mongodb.net/phonebook-app?retryWrites=true&w=majority`;
 
+console.log('Connecting to MongoDB...');
+
 mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -17,8 +19,16 @@ mongoose.connect(url, {
 });
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minlength: 3,
+    required: true,
+  },
+  number: {
+    type: String,
+    minlength: 9,
+    required: true,
+  },
 });
 
 const Person = mongoose.model('Person', personSchema);

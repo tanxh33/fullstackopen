@@ -5,7 +5,7 @@ const Person = ({
   id, name, number, deleteHandler,
 }) => (
   <li className="mb-xs">
-    {`${id} ${name} ${number} `}
+    {`${name} ${number} `}
     <button
       type="button"
       onClick={() => deleteHandler(id, name)}
