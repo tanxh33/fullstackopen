@@ -9,6 +9,7 @@
 /part3/phonebook-backend/node_modules/
 /part3/phonebook-backend/build/
 /part3/phonebook-backend/db_local/
+/part4/blog/node_modules/
 
 /.pnp
 .pnp.js
