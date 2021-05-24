@@ -42,6 +42,14 @@ test('a specific blog is within the returned blogs', async () => {
   expect(titles).toContain('First class tests');
 });
 
+test('id property exists', async () => {
+  const response = await api.get('/api/blogs');
+  console.log(response.body);
+  response.body.forEach((blog) => {
+    expect(blog.id).toBeDefined();
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
