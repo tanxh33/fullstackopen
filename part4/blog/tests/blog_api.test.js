@@ -67,9 +67,10 @@ describe('HTTP POST', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const response = await api.get('/api/blogs');
-    const contents = response.body.map((r) => r.title);
-    expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+    const contents = blogsAtEnd.map((r) => r.title);
     expect(contents).toContain('IKINARI STEAK');
   });
 
@@ -86,9 +87,9 @@ describe('HTTP POST', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const response = await api.get('/api/blogs');
-    expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
-    response.body.forEach((blog) => {
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+    blogsAtEnd.forEach((blog) => {
       expect(blog.likes).toBeDefined();
     });
   });
@@ -104,8 +105,8 @@ describe('HTTP POST', () => {
       .send(newBlog)
       .expect(400);
 
-    const response = await api.get('/api/blogs');
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
   });
 
   test('blog without url is not added', async () => {
@@ -119,8 +120,8 @@ describe('HTTP POST', () => {
       .send(newBlog)
       .expect(400);
 
-    const response = await api.get('/api/blogs');
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
   });
 });
 

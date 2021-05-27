@@ -1,4 +1,4 @@
-// const Blog = require('../models/blog');
+const Blog = require('../models/blog');
 
 const initialBlogs = [
   {
@@ -51,6 +51,13 @@ const initialBlogs = [
   },
 ];
 
+// Check the blogs stored inside the database.
+const blogsInDb = async () => {
+  const blogs = await Blog.find({}); // Same as api.get('/')
+  return blogs.map((blog) => blog.toJSON());
+};
+
 module.exports = {
   initialBlogs,
+  blogsInDb,
 };
