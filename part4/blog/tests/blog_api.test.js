@@ -6,7 +6,7 @@ const Blog = require('../models/blog');
 
 const api = supertest(app);
 
-// Initialise the database before *every* test.
+// Re-initialise the database before *every* test.
 beforeEach(async () => {
   await Blog.deleteMany({});
 
@@ -24,29 +24,103 @@ beforeEach(async () => {
   // }
 });
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+describe('HTTP GET', () => {
+  test('blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('all blogs are returned', async () => {
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(helper.initialBlogs.length);
+  });
+
+  test('a specific blog is within the returned blogs', async () => {
+    const response = await api.get('/api/blogs');
+    const titles = response.body.map((r) => r.title);
+    expect(titles).toContain('First class tests');
+  });
+
+  // Verify that the unique identifier property is named 'id'
+  test('id property exists', async () => {
+    const response = await api.get('/api/blogs');
+    response.body.forEach((blog) => {
+      expect(blog.id).toBeDefined();
+    });
+  });
 });
 
-test('all blogs are returned', async () => {
-  const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(helper.initialBlogs.length);
-});
+describe('HTTP POST', () => {
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'IKINARI STEAK',
+      author: 'Sakura Ayane',
+      url: 'https://yakuza.fandom.com/wiki/Ikinari_Steak',
+      likes: 10,
+    };
 
-test('a specific blog is within the returned blogs', async () => {
-  const response = await api.get('/api/blogs');
-  const titles = response.body.map((r) => r.title);
-  expect(titles).toContain('First class tests');
-});
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
 
-test('id property exists', async () => {
-  const response = await api.get('/api/blogs');
-  console.log(response.body);
-  response.body.forEach((blog) => {
-    expect(blog.id).toBeDefined();
+    const response = await api.get('/api/blogs');
+    const contents = response.body.map((r) => r.title);
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
+    expect(contents).toContain('IKINARI STEAK');
+  });
+
+  test('a new post without likes will default it to 0', async () => {
+    const newBlog = {
+      title: 'Bakuretsu Mahou',
+      author: 'Takahashi Rie',
+      url: 'https://konosuba.fandom.com/wiki/Megumin',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
+    response.body.forEach((blog) => {
+      expect(blog.likes).toBeDefined();
+    });
+  });
+
+  test('blog without title is not added', async () => {
+    const newBlog = {
+      author: 'Grant Sanderson',
+      url: 'https://www.3blue1brown.com/',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(helper.initialBlogs.length);
+  });
+
+  test('blog without url is not added', async () => {
+    const newBlog = {
+      title: '3 Blue 1 Brown',
+      author: 'Grant Sanderson',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(helper.initialBlogs.length);
   });
 });
 
