@@ -57,7 +57,16 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+// Generate an ID that will not belong to any blog object in the DB
+const nonExistingId = async () => {
+  const blog = new Blog({ title: 'willremovethissoon', author: 'DeepFuckingValue', url: 'omegalul.com' });
+  await blog.save();
+  await blog.remove();
+  return blog._id.toString();
+};
+
 module.exports = {
   initialBlogs,
   blogsInDb,
+  nonExistingId,
 };
