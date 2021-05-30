@@ -175,6 +175,23 @@ describe('HTTP DELETE: deletion of a blog', () => {
   });
 });
 
+describe('HTTP PUT: update a blog', () => {
+  test('succeeds when updating number of likes', async () => {
+    const blogsInDb = await helper.blogsInDb();
+    const blogToUpdate = blogsInDb[0];
+    const blog = { ...blogToUpdate, likes: 343 };
+
+    const updatedBlog = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(updatedBlog.body).toEqual(blog);
+    expect(updatedBlog.body.likes).toBe(343);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
