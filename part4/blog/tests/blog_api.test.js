@@ -24,7 +24,7 @@ beforeEach(async () => {
   // }
 });
 
-describe('HTTP GET', () => {
+describe('HTTP GET: when there are initially some notes saved', () => {
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -52,8 +52,8 @@ describe('HTTP GET', () => {
   });
 });
 
-describe('HTTP POST', () => {
-  test('a valid blog can be added', async () => {
+describe('HTTP POST: addition of a new note', () => {
+  test('succeeds with valid data', async () => {
     const newBlog = {
       title: 'IKINARI STEAK',
       author: 'Sakura Ayane',
@@ -94,7 +94,7 @@ describe('HTTP POST', () => {
     });
   });
 
-  test('blog without title is not added', async () => {
+  test('blog without title is not added, with status code 400', async () => {
     const newBlog = {
       author: 'Grant Sanderson',
       url: 'https://www.3blue1brown.com/',
@@ -109,7 +109,7 @@ describe('HTTP POST', () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
   });
 
-  test('blog without url is not added', async () => {
+  test('blog without url is not added, with status code 400', async () => {
     const newBlog = {
       title: '3 Blue 1 Brown',
       author: 'Grant Sanderson',
@@ -122,6 +122,23 @@ describe('HTTP POST', () => {
 
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
+});
+
+describe('HTTP DELETE: deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+    const contents = blogsAtEnd.map((r) => r.title);
+    expect(contents).not.toContain(blogToDelete.title);
   });
 });
 
