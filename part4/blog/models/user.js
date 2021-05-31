@@ -14,10 +14,11 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   // IDs of blogs are stored in User as an array of Mongo IDs, unlike relational DB foreign key.
-  notes: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog',
-  },
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog',
+    }],
 });
 
 userSchema.plugin(uniqueValidator);

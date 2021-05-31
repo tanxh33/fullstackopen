@@ -2,7 +2,7 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "我的博客"
+    "title": ""
 }
 
 ###
@@ -13,5 +13,16 @@ Content-Type: application/json
     "title": "yet another insignificant programming notes",
     "author": "Chua Hock Chuan",
     "url": "https://www3.ntu.edu.sg/home/ehchua/programming/index.html",
+    "likes": 5
+}
+
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "我的博客",
+    "author": "司馬遷",
+    "url": "https://www.baidu.com",
     "likes": 5
 }
