@@ -1,4 +1,5 @@
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const initialBlogs = [
   {
@@ -57,6 +58,11 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
 // Generate an ID that will not belong to any blog object in the DB
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon', author: 'DeepFuckingValue', url: 'omegalul.com' });
@@ -68,5 +74,6 @@ const nonExistingId = async () => {
 module.exports = {
   initialBlogs,
   blogsInDb,
+  usersInDb,
   nonExistingId,
 };

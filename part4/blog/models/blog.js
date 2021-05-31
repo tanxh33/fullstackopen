@@ -14,6 +14,11 @@ const blogSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  // Blog contains reference to User who created it.
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 // Format objects returned by Mongoose
