@@ -22,15 +22,16 @@ blogsRouter.get('/:id', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   const { body } = request;
 
-  // Validate and return decoded Object
+  // Validate and return decoded Object in the token
   const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!request.token || !decodedToken.id) {
+  const userid = decodedToken.id;
+  if (!request.token || !userid) {
     // Respond with 401 unauthorized if no token or ID undefined
     return response.status(401).json({ error: 'token missing or invalid' });
   }
 
   // Use the user's ID from the token to search database
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(userid);
 
   const blog = new Blog({
     title: body.title,
@@ -50,7 +51,23 @@ blogsRouter.post('/', async (request, response) => {
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
+  const blogid = request.params.id;
+
+  // Validate and return decoded Object in the token
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  const userid = decodedToken.id;
+  if (!request.token || !userid) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const blog = await Blog.findById(blogid);
+  // Check the database blog's user id is the same as the token's user id
+  if (blog && blog.user.toString() === userid.toString()) {
+    // Delete the blog from database if it is.
+    blog.remove();
+  }
+
+  // Respond with 204 No Content.
   response.status(204).end();
 });
 
