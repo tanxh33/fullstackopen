@@ -95,8 +95,14 @@ describe('Blog api: HTTP GET: when there are initially some notes saved', () => 
         likes: 10,
       };
 
+      const response = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'sekretpassword' });
+      const { token } = response.body;
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/);
@@ -108,6 +114,20 @@ describe('Blog api: HTTP GET: when there are initially some notes saved', () => 
       expect(contents).toContain('IKINARI STEAK');
     });
 
+    test('fails with status code 401 without auth token', async () => {
+      const newBlog = {
+        title: 'IKINARI STEAK',
+        author: 'Sakura Ayane',
+        url: 'https://yakuza.fandom.com/wiki/Ikinari_Steak',
+        likes: 10,
+      };
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401);
+    });
+
     test('a new post without likes will default it to 0', async () => {
       const newBlog = {
         title: 'Bakuretsu Mahou',
@@ -115,8 +135,14 @@ describe('Blog api: HTTP GET: when there are initially some notes saved', () => 
         url: 'https://konosuba.fandom.com/wiki/Megumin',
       };
 
+      const response = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'sekretpassword' });
+      const { token } = response.body;
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/);
@@ -134,8 +160,14 @@ describe('Blog api: HTTP GET: when there are initially some notes saved', () => 
         url: 'https://www.3blue1brown.com/',
       };
 
+      const response = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'sekretpassword' });
+      const { token } = response.body;
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(400);
 
@@ -149,8 +181,14 @@ describe('Blog api: HTTP GET: when there are initially some notes saved', () => 
         author: 'Grant Sanderson',
       };
 
+      const response = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'sekretpassword' });
+      const { token } = response.body;
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(400);
 
@@ -161,18 +199,42 @@ describe('Blog api: HTTP GET: when there are initially some notes saved', () => 
 
   describe('HTTP DELETE: deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
-      const blogsAtStart = await helper.blogsInDb();
-      const blogToDelete = blogsAtStart[0];
+      // Add a new post, then DELETE it.
+
+      const response = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'sekretpassword' });
+      const { token } = response.body;
+
+      const newBlog = {
+        title: 'IKINARI STEAK',
+        author: 'Sakura Ayane',
+        url: 'https://yakuza.fandom.com/wiki/Ikinari_Steak',
+        likes: 10,
+      };
+
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+
+      const blogsAfterAdding = await helper.blogsInDb();
+      expect(blogsAfterAdding).toHaveLength(helper.initialBlogs.length + 1);
+
+      const blogToDelete = blogsAfterAdding.filter((b) => b.title === 'IKINARI STEAK')[0];
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `bearer ${token}`)
         .expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
-      expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+      expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 
-      const contents = blogsAtEnd.map((r) => r.title);
-      expect(contents).not.toContain(blogToDelete.title);
+      // const contents = blogsAtEnd.map((r) => r.title);
+      // expect(contents).not.toContain(blogToDelete.title);
     });
   });
 
@@ -198,7 +260,7 @@ describe('User api: when there is initially one user in DB', () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
-    const passwordHash = await bcrypt.hash('sekret', 10);
+    const passwordHash = await bcrypt.hash('sekretpassword', 10);
     const user = new User({ username: 'root', passwordHash });
 
     await user.save();
