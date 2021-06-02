@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "notes": [],
+    "username": "root",
+    "name": "superuser",
+    "password": "password123"
+}
