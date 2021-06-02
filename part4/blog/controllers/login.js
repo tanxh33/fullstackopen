@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // consider express-jwt for auth as well
 const bcrypt = require('bcrypt');
 const loginRouter = require('express').Router();
 const User = require('../models/user');
@@ -24,7 +24,14 @@ loginRouter.post('/', async (request, response) => {
   };
 
   // Create a token using the username and user ID, and an environment string variable
-  const token = jwt.sign(userForToken, process.env.SECRET);
+  const token = jwt.sign(
+    userForToken,
+    process.env.SECRET,
+    { expiresIn: 60 * 60 }, // Force re-login after expiry in 1h
+  );
+  // An alternative solution to expiring tokens:
+  // Save info about each token to backend DB (server side session)
+  // and check for each API request if the access right for that token is still valid
 
   response
     .status(200) // OK
