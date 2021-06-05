@@ -11,6 +11,7 @@
 /part3/phonebook-backend/db_local/
 /part4/blog/node_modules/
 /part4/blog/.env
+/part5/blog-frontend/node_modules/
 
 /.pnp
 .pnp.js
