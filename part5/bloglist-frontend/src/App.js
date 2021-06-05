@@ -10,12 +10,23 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogAuthor, setBlogAuthor] = useState('');
+  const [blogUrl, setBlogUrl] = useState('');
+
   const [notification, setNotification] = useState({ message: null, type: '' });
   const notificationDuration = 5000;
 
+  const appBodyStyle = {
+    margin: 'auto',
+    padding: '2rem',
+  };
+
   // Initialise blog list
-  useEffect(() => {
-    blogService.getAll().then((allBlogs) => setBlogs(allBlogs));
+  useEffect(async () => {
+    const allBlogs = await blogService.getAll();
+    setBlogs(allBlogs);
   }, []);
 
   // On load, check if there is a logged-in user from local storage
@@ -24,7 +35,7 @@ const App = () => {
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
       setUser(loggedUser);
-      // blogService.setToken(loggedUser.token);
+      blogService.setToken(loggedUser.token);
     }
   }, []);
 
@@ -43,7 +54,7 @@ const App = () => {
       const retrievedUser = await loginService.login({ username, password });
 
       window.localStorage.setItem('loggedBloglistUser', JSON.stringify(retrievedUser));
-      // blogService.setToken(retrievedUser.token);
+      blogService.setToken(retrievedUser.token);
       setUser(retrievedUser);
       setUsername('');
       setPassword('');
@@ -58,12 +69,33 @@ const App = () => {
     setUser(null);
   };
 
+  const addBlog = async (event) => {
+    event.preventDefault();
+    try {
+      const newBlog = {
+        title: blogTitle,
+        author: blogAuthor,
+        url: blogUrl,
+      };
+      // Send a POST request to API blog
+      await blogService.create(newBlog);
+      // Refresh blog list
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
+      setBlogTitle('');
+      setBlogAuthor('');
+      setBlogUrl('');
+    } catch (exception) {
+      setTempNotification('Adding blog failed', 'error', notificationDuration);
+    }
+  };
+
   const loginForm = () => (
     <div>
-      <h2>Log in to application</h2>
+      <h2 className="pb-s">Log in to application</h2>
       <form onSubmit={handleLogin}>
-        <div>
-          Username
+        <div className="pb-s">
+          Username:
           <input
             type="text"
             value={username}
@@ -71,8 +103,8 @@ const App = () => {
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
-        <div>
-          Password
+        <div className="pb-s">
+          Password:
           <input
             type="password"
             value={password}
@@ -86,19 +118,38 @@ const App = () => {
   );
 
   const blogForm = () => (
-    // <form onSubmit={addBlog}>
-    <form>
-      <input
-        value="yep"
-        // onChange={handleBlogChange}
-      />
-      <button type="submit">save</button>
-    </form>
+    <div>
+      <h2 className="pb-s">Create new</h2>
+      <form onSubmit={addBlog}>
+        <div className="pb-s">
+          title:
+          <input
+            value={blogTitle}
+            onChange={({ target }) => setBlogTitle(target.value)}
+          />
+        </div>
+        <div className="pb-s">
+          author:
+          <input
+            value={blogAuthor}
+            onChange={({ target }) => setBlogAuthor(target.value)}
+          />
+        </div>
+        <div className="pb-s">
+          url:
+          <input
+            value={blogUrl}
+            onChange={({ target }) => setBlogUrl(target.value)}
+          />
+        </div>
+        <button type="submit">Create</button>
+      </form>
+    </div>
   );
 
   return (
-    <div>
-      <h1>blogs</h1>
+    <div style={appBodyStyle}>
+      <h1 className="pb-s">blogs!</h1>
 
       <Notification message={notification.message} type={notification.type} />
 
@@ -106,10 +157,12 @@ const App = () => {
         ? loginForm()
         : (
           <div>
-            <p>{`${user.name} logged in`}</p>
-            <button type="button" onClick={handleLogout}>Logout</button>
-            {blogForm()}
+            <div className="pb-m">
+              <span>{`Logged in as ${user.name} `}</span>
+              <button type="button" onClick={handleLogout}>Logout</button>
+            </div>
             {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+            {blogForm()}
           </div>
         )}
 

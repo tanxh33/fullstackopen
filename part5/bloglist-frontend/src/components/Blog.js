@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Blog = ({ blog }) => (
-  <div>
-    {`${blog.title}, ${blog.author}`}
+  <div className="pb-m">
+    <p>{`${blog.title}, ${blog.author}`}</p>
+    <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a>
   </div>
 );
 
