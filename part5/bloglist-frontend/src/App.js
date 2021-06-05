@@ -58,8 +58,9 @@ const App = () => {
       setUser(retrievedUser);
       setUsername('');
       setPassword('');
+      setTempNotification('Login successful', 'success', notificationDuration);
     } catch (exception) {
-      setTempNotification('Wrong credentials', 'error', notificationDuration);
+      setTempNotification('Wrong username or password', 'error', notificationDuration);
     }
   };
 
@@ -85,6 +86,7 @@ const App = () => {
       setBlogTitle('');
       setBlogAuthor('');
       setBlogUrl('');
+      setTempNotification(`Blog added: ${newBlog.title} by ${newBlog.author}`, 'success', notificationDuration);
     } catch (exception) {
       setTempNotification('Adding blog failed', 'error', notificationDuration);
     }
