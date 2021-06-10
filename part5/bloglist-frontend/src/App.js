@@ -94,11 +94,11 @@ const App = () => {
             <div className="pb-m">
               <span>{`Logged in as ${user.name} `}</span>
               <button type="button" onClick={handleLogout}>Logout</button>
+              <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
+                <BlogForm createBlog={addBlog} />
+              </Toggleable>
             </div>
             {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
-            <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
-              <BlogForm createBlog={addBlog} />
-            </Toggleable>
           </div>
         )}
 
