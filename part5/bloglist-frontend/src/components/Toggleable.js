@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle } from 'react';
 
-const Toggleable = (props) => {
+// Component function wrapped inside forwardRef function call.
+const Toggleable = React.forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
 
   const hideWhenVisible = { display: visible ? 'none' : '' };
@@ -9,6 +10,10 @@ const Toggleable = (props) => {
   const toggleVisibility = () => {
     setVisible(!visible);
   };
+
+  // A React hook, used to make toggleVisbility() available outside of
+  // the component, used with forwardRef.
+  useImperativeHandle(ref, () => ({ toggleVisibility }));
 
   return (
     <div>
@@ -24,6 +29,6 @@ const Toggleable = (props) => {
       </div>
     </div>
   );
-};
+});
 
 export default Toggleable;

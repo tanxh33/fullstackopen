@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
@@ -14,6 +14,8 @@ const App = () => {
 
   const [notification, setNotification] = useState({ message: null, type: '' });
   const notificationDuration = 5000;
+
+  const blogFormRef = useRef();
 
   const appBodyStyle = {
     margin: 'auto',
@@ -73,6 +75,7 @@ const App = () => {
       const allBlogs = await blogService.getAll();
       setBlogs(allBlogs);
       setTempNotification(`Blog added: ${blogObject.title} by ${blogObject.author}`, 'success', notificationDuration);
+      blogFormRef.current.toggleVisibility(); // Hide form after new blog created.
     } catch (exception) {
       setTempNotification('Adding blog failed', 'error', notificationDuration);
     }
@@ -93,7 +96,7 @@ const App = () => {
               <button type="button" onClick={handleLogout}>Logout</button>
             </div>
             {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
-            <Toggleable buttonLabel="Add new blog">
+            <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
               <BlogForm createBlog={addBlog} />
             </Toggleable>
           </div>
