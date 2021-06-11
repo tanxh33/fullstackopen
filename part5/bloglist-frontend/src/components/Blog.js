@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Blog = ({ blog, likeBlog }) => {
+const Blog = ({ blog, likeBlog, deleteBlog }) => {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpanded = (event) => {
@@ -30,6 +30,7 @@ const Blog = ({ blog, likeBlog }) => {
             <button onClick={likeBlog} type="button">Like</button>
           </div>
           <p>{`${blog.user.name}`}</p>
+          <button onClick={deleteBlog} type="button" className="error mt-s">Delete</button>
         </div>
       )
       : (
@@ -46,6 +47,7 @@ Blog.propTypes = {
   // eslint-disable-next-line
   blog: PropTypes.object.isRequired,
   likeBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;

@@ -97,6 +97,21 @@ const App = () => {
     }
   };
 
+  // Passed into Blog component
+  const deleteBlogHandler = async (id) => {
+    const blog = blogs.find((b) => b.id === id);
+    // eslint-disable-next-line
+    if (window.confirm(`Are you sure you want to remove ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.remove(id);
+        setBlogs(blogs.filter((b) => b.id !== id));
+        setTempNotification('Blog deleted', 'success', notificationDuration);
+      } catch (exception) {
+        setTempNotification('Updated blog failed', 'error', notificationDuration);
+      }
+    }
+  };
+
   return (
     <div style={appBodyStyle}>
       <h1 className="pb-s">blogs!</h1>
@@ -119,6 +134,7 @@ const App = () => {
                 key={blog.id}
                 blog={blog}
                 likeBlog={() => likeBlogHandler(blog.id)}
+                deleteBlog={() => deleteBlogHandler(blog.id)}
               />
             ))}
           </div>
