@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpanded = (event) => {
@@ -22,7 +22,10 @@ const Blog = ({ blog }) => {
         <div style={blogStyle}>
           <p>{`${blog.title}, ${blog.author}`}</p>
           <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a>
-          <p>{`Likes: ${blog.likes}`}</p>
+          <div>
+            {`Likes: ${blog.likes} `}
+            <button onClick={likeBlog} type="button">Like</button>
+          </div>
           <p>{`${blog.user.name}`}</p>
           <br />
           <button onClick={toggleExpanded} type="button">Hide</button>
@@ -41,8 +44,7 @@ const Blog = ({ blog }) => {
 Blog.propTypes = {
   // eslint-disable-next-line
   blog: PropTypes.object.isRequired,
-  // title: PropTypes.string.isRequired,
-  // author: PropTypes.string.isRequired,
+  likeBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;
