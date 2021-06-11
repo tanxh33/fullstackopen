@@ -20,22 +20,23 @@ const Blog = ({ blog, likeBlog }) => {
     expanded
       ? (
         <div style={blogStyle}>
-          <p>{`${blog.title}, ${blog.author}`}</p>
+          <button onClick={toggleExpanded} type="button" className="mb-s">Hide</button>
+          <br />
+          <p>{blog.title}</p>
+          <p>{blog.author}</p>
           <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a>
           <div>
             {`Likes: ${blog.likes} `}
             <button onClick={likeBlog} type="button">Like</button>
           </div>
           <p>{`${blog.user.name}`}</p>
-          <br />
-          <button onClick={toggleExpanded} type="button">Hide</button>
         </div>
       )
       : (
         <div style={blogStyle}>
-          <p>{`${blog.title}, ${blog.author}`}</p>
-          <br />
-          <button onClick={toggleExpanded} type="button">View</button>
+          <button onClick={toggleExpanded} type="button" className="mb-s">View</button>
+          <p>{blog.title}</p>
+          <p>{blog.author}</p>
         </div>
       )
   );

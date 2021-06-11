@@ -22,10 +22,12 @@ const App = () => {
     padding: '2rem',
   };
 
-  // Initialise blog list
+  const sortByLikes = (b1, b2) => b2.likes - b1.likes;
+
+  // Initialise blog list on load
   useEffect(async () => {
     const allBlogs = await blogService.getAll();
-    setBlogs(allBlogs);
+    setBlogs(allBlogs.sort(sortByLikes));
   }, []);
 
   // On load, check if there is a logged-in user from local storage
@@ -73,7 +75,7 @@ const App = () => {
       await blogService.create(blogObject);
       // Refresh blog list
       const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
+      setBlogs(allBlogs.sort(sortByLikes));
       setTempNotification(`Blog added: ${blogObject.title} by ${blogObject.author}`, 'success', notificationDuration);
       blogFormRef.current.toggleVisibility(); // Hide form after new blog created.
     } catch (exception) {
