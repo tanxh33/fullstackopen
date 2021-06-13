@@ -19,7 +19,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
   return (
     expanded
       ? (
-        <div style={blogStyle}>
+        <div style={blogStyle} className="blog">
           <button onClick={toggleExpanded} type="button" className="mb-s">Hide</button>
           <br />
           <p>{blog.title}</p>
@@ -34,7 +34,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
         </div>
       )
       : (
-        <div style={blogStyle}>
+        <div style={blogStyle} className="blog">
           <button onClick={toggleExpanded} type="button" className="mb-s">View</button>
           <p>{blog.title}</p>
           <p>{blog.author}</p>

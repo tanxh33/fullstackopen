@@ -21,7 +21,7 @@ const Toggleable = React.forwardRef((props, ref) => {
         {/* eslint-disable-next-line */}
         <button onClick={toggleVisibility} type="button">{props.buttonLabel}</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="toggleableContent">
         {/* props.children references the child components, empty array if none */}
         {/* eslint-disable-next-line */}
         {props.children}

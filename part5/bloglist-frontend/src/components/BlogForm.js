@@ -19,7 +19,7 @@ const BlogForm = ({ createBlog }) => {
   };
 
   return (
-    <div className="my-s">
+    <div className="blogFormDiv my-s">
       <h2 className="pb-s">Create new blog entry</h2>
 
       <form onSubmit={addBlog}>
