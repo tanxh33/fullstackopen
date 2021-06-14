@@ -26,7 +26,9 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
           <p>{blog.author}</p>
           <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a>
           <div>
-            {`Likes: ${blog.likes} `}
+            {'Likes: '}
+            <span className="blog-likes">{blog.likes}</span>
+            {' '}
             <button onClick={likeBlog} type="button">Like</button>
           </div>
           <p>{`${blog.user.name}`}</p>

@@ -56,11 +56,14 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   const blog = await Blog.findById(blogid);
   // Check the database blog's user id is the same as the token's user id
-  if (blog && blog.user.toString() === userid.toString()) {
+  if (blog) {
+    if (blog.user.toString() === userid.toString()) {
     // Delete the blog from database if it is.
-    blog.remove();
+      blog.remove();
+    } else {
+      return response.status(401).json({ error: 'unauthorized user' });
+    }
   }
-
   // Respond with 204 No Content.
   response.status(204).end();
 });

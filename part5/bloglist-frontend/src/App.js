@@ -91,7 +91,7 @@ const App = () => {
       // Send a PUT request to API blog
       const returnedBlog = await blogService.update(id, updatedBlog);
       // Refresh blog list
-      setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
+      setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)).sort(sortByLikes));
     } catch (exception) {
       setTempNotification('Updated blog failed', 'error', notificationDuration);
     }
@@ -107,7 +107,7 @@ const App = () => {
         setBlogs(blogs.filter((b) => b.id !== id));
         setTempNotification('Blog deleted', 'success', notificationDuration);
       } catch (exception) {
-        setTempNotification('Updated blog failed', 'error', notificationDuration);
+        setTempNotification('Delete blog failed', 'error', notificationDuration);
       }
     }
   };

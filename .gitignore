@@ -12,6 +12,7 @@
 /part4/blog/node_modules/
 /part4/blog/.env
 /part5/blog-frontend/node_modules/
+/part5/blog-frontend/cypress/videos/
 
 /.pnp
 .pnp.js

@@ -17,5 +17,6 @@ module.exports = {
     'consistent-return': 0,
     'no-underscore-dangle': 0,
     'no-param-reassign': 0,
+    'global-require': 0,
   },
 };
