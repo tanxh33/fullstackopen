@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { voteOn } from '../reducers/anecdoteReducer';
-import { resetNotification, setNotification } from '../reducers/notificationReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
 const sortByVotesDesc = (a, b) => b.votes - a.votes;
 
@@ -33,10 +33,7 @@ const AnecdoteList = () => {
     // console.log('vote', id);
     const anecdote = anecdoteList.find((a) => a.id === id);
     dispatch(voteOn(id, anecdote)); // Action creators defined in and imported from reducer file
-    dispatch(setNotification(`You voted for "${anecdote.content}"`));
-    setTimeout(() => {
-      dispatch(resetNotification());
-    }, 5000);
+    dispatch(setNotification(`You voted for "${anecdote.content}"`, 5000));
   };
 
   return (
