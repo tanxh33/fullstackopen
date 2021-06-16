@@ -7,14 +7,18 @@ const Notification = () => {
   const style = {
     border: 'solid',
     padding: 10,
-    borderWidth: 1,
+    borderWidth: 2,
+    borderRadius: '0.25rem',
   };
 
-  return (
-    <div style={style}>
-      {notification}
-    </div>
-  );
+  if (notification !== '') {
+    return (
+      <div style={style}>
+        {notification}
+      </div>
+    );
+  }
+  return (<></>);
 };
 
 export default Notification;

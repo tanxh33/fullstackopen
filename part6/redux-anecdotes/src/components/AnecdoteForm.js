@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { createAnecdote } from '../reducers/anecdoteReducer';
+import { resetNotification, setNotification } from '../reducers/notificationReducer';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,10 @@ const AnecdoteForm = () => {
     inputEl.value = '';
     if (content !== '') {
       dispatch(createAnecdote(content));
+      dispatch(setNotification(`You added "${content}"`));
+      setTimeout(() => {
+        dispatch(resetNotification());
+      }, 5000);
     }
   };
 
