@@ -32,7 +32,7 @@ const AnecdoteList = () => {
   const vote = (id) => {
     // console.log('vote', id);
     const anecdote = anecdoteList.find((a) => a.id === id);
-    dispatch(voteOn(id)); // Action creators defined in and imported from reducer file
+    dispatch(voteOn(id, anecdote)); // Action creators defined in and imported from reducer file
     dispatch(setNotification(`You voted for "${anecdote.content}"`));
     setTimeout(() => {
       dispatch(resetNotification());

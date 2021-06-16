@@ -8,11 +8,12 @@ const AnecdoteForm = () => {
 
   // With Redux, we can shift the event handler for this component
   // away from the parent <App /> and into this child component.
-  const addAnecdote = (event) => {
+  const addAnecdote = async (event) => {
     event.preventDefault();
     const inputEl = event.target.anecdote;
     const content = inputEl.value.trim();
     inputEl.value = '';
+
     if (content !== '') {
       dispatch(createAnecdote(content));
       dispatch(setNotification(`You added "${content}"`));
