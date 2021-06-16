@@ -19,13 +19,19 @@ const Anecdote = ({ content, votes, vote }) => (
 );
 
 const AnecdoteList = () => {
-  // Access Redux store's state, with optional filters
-  const anecdotes = useSelector((state) => state.anecdotes.sort(sortByVotesDesc));
+  // Access Redux store's state through useSelector, with optional filters
+  const anecdoteList = useSelector(({ anecdotes, filter }) => { // destructured state
+    const sortedAnecdotes = anecdotes.sort(sortByVotesDesc);
+    if (filter) {
+      return sortedAnecdotes.filter((a) => a.content.toUpperCase().includes(filter.toUpperCase()));
+    }
+    return anecdotes.sort(sortByVotesDesc);
+  });
   const dispatch = useDispatch(); // Redux store's dispatch function
 
   const vote = (id) => {
     // console.log('vote', id);
-    const anecdote = anecdotes.find((a) => a.id === id);
+    const anecdote = anecdoteList.find((a) => a.id === id);
     dispatch(voteOn(id)); // Action creators defined in and imported from reducer file
     dispatch(setNotification(`You voted for "${anecdote.content}"`));
     setTimeout(() => {
@@ -34,7 +40,7 @@ const AnecdoteList = () => {
   };
 
   return (
-    anecdotes.map((anecdote) => (
+    anecdoteList.map((anecdote) => (
       <Anecdote
         key={anecdote.id}
         content={anecdote.content}
