@@ -1,10 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { createAnecdote } from '../reducers/anecdoteReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch();
+const AnecdoteForm = (props) => {
+  // const dispatch = useDispatch();
 
   // With Redux, we can shift the event handler for this component
   // away from the parent <App /> and into this child component.
@@ -15,8 +16,8 @@ const AnecdoteForm = () => {
     inputEl.value = '';
 
     if (content !== '') {
-      dispatch(createAnecdote(content));
-      dispatch(setNotification(`You added "${content}"`, 5000));
+      props.createAnecdote(content);
+      props.setNotification(`You added "${content}"`, 5000);
     }
   };
 
@@ -28,4 +29,15 @@ const AnecdoteForm = () => {
   );
 };
 
-export default AnecdoteForm;
+AnecdoteForm.propTypes = {
+  createAnecdote: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = {
+  createAnecdote,
+  setNotification,
+};
+
+const connectedAnecdoteForm = connect(null, mapDispatchToProps)(AnecdoteForm);
+export default connectedAnecdoteForm;

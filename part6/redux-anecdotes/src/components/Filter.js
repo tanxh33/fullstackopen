@@ -1,19 +1,22 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { setFilter } from '../reducers/filterReducer';
 
-const Filter = () => {
-  const filterText = useSelector(({ filter }) => filter);
-  const dispatch = useDispatch();
+const Filter = (props) => {
+  // const filterText = useSelector(({ filter }) => filter);
+  // const dispatch = useDispatch();
+
+  const { filterText, setFilter } = props; // eslint-disable-line no-shadow
 
   const handleChange = (event) => {
     const filterTerm = event.target.value.trim();
-    dispatch(setFilter(filterTerm));
+    setFilter(filterTerm);
   };
 
   const clearFilter = () => {
     if (filterText !== '') {
-      dispatch(setFilter(''));
+      setFilter('');
     }
   };
 
@@ -30,4 +33,19 @@ const Filter = () => {
   );
 };
 
-export default Filter;
+Filter.propTypes = {
+  filterText: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  filterText: state.filter,
+});
+
+// A group of action creator functions, passed to the connected component as props.
+const mapDispatchToProps = {
+  setFilter,
+};
+
+const connectedFilter = connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default connectedFilter;

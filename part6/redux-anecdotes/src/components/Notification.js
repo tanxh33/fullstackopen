@@ -1,24 +1,41 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-const Notification = () => {
-  const notification = useSelector((state) => state.notification);
+const Notification = (props) => {
+  // Using the hook-api (recommended)
+  // const notification = useSelector((state) => state.notification);
 
-  const style = {
+  // Using connect(), for older projects using redux
+  const { notification } = props;
+
+  let style = {
     border: 'solid',
     padding: 10,
     borderWidth: 2,
     borderRadius: '0.25rem',
   };
 
-  if (notification !== '') {
-    return (
-      <div style={style}>
-        {notification}
-      </div>
-    );
+  if (notification === '') {
+    style = { ...style, display: 'none' };
   }
-  return (<></>);
+
+  return (
+    <div style={style}>
+      {notification}
+    </div>
+  );
 };
 
-export default Notification;
+Notification.propTypes = {
+  notification: PropTypes.string.isRequired,
+};
+
+// Let the Notification component access/reference the state of the
+// store through props.<whatever>
+const mapStateToProps = (state) => ({
+  notification: state.notification,
+});
+
+const ConnectedNotification = connect(mapStateToProps)(Notification);
+export default ConnectedNotification;
