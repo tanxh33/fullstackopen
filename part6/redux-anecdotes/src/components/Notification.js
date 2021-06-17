@@ -34,7 +34,7 @@ Notification.propTypes = {
 // Let the Notification component access/reference the state of the
 // store through props.<whatever>
 const mapStateToProps = (state) => ({
-  notification: state.notification,
+  notification: state.notification.message,
 });
 
 const ConnectedNotification = connect(mapStateToProps)(Notification);
