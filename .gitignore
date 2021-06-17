@@ -13,6 +13,9 @@
 /part4/blog/.env
 /part5/blog-frontend/node_modules/
 /part5/blog-frontend/cypress/videos/
+/part6/counter/node_modules/
+/part6/unicafe-redux/node_modules/
+/part6/redux-anecdotes/node_modules/
 
 /.pnp
 .pnp.js
