@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  BrowserRouter as Router, Switch, Route, Link, useParams,
+  Switch, Route, Link, useRouteMatch,
 } from 'react-router-dom';
 
 const Menu = () => {
@@ -16,20 +16,16 @@ const Menu = () => {
   );
 };
 
-const Anecdote = ({ anecdotes }) => {
-  const { id } = useParams();
-  const anecdote = anecdotes.find((a) => a.id === id);
-  return (
-    <div>
-      <h2>{`${anecdote.content} by ${anecdote.author}`}</h2>
-      <p>{`has ${anecdote.votes} votes`}</p>
-      <p>
-        {'For more info, see '}
-        <a href={anecdote.info}>{anecdote.info}</a>
-      </p>
-    </div>
-  );
-};
+const Anecdote = ({ anecdote }) => (
+  <div>
+    <h2>{`${anecdote.content} by ${anecdote.author}`}</h2>
+    <p>{`has ${anecdote.votes} votes`}</p>
+    <p>
+      {'For more info, see '}
+      <a href={anecdote.info}>{anecdote.info}</a>
+    </p>
+  </div>
+);
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -131,6 +127,10 @@ const App = () => {
   // eslint-disable-next-line no-unused-vars
   const [notification, setNotification] = useState('');
 
+  // Every time the component is rendered, the match will be made.
+  const match = useRouteMatch('/anecdotes/:id');
+  const singleAnecdote = match ? anecdotes.find((anec) => anec.id === match.params.id) : null;
+
   const addNew = (anecdote) => {
     const newAnecdote = { ...anecdote, id: (Math.random() * 10000).toFixed(0) };
     setAnecdotes(anecdotes.concat(newAnecdote));
@@ -151,7 +151,7 @@ const App = () => {
   };
 
   return (
-    <Router>
+    <div>
       <h1>Software anecdotes</h1>
       <Menu />
 
@@ -163,14 +163,14 @@ const App = () => {
           <About />
         </Route>
         <Route path="/anecdotes/:id">
-          <Anecdote anecdotes={anecdotes} />
+          <Anecdote anecdote={singleAnecdote} />
         </Route>
         <Route path="/">
           <AnecdoteList anecdotes={anecdotes} />
         </Route>
       </Switch>
       <Footer />
-    </Router>
+    </div>
   );
 };
 
