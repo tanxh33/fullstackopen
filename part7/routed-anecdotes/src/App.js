@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import {
+  BrowserRouter as Router, Switch, Route, Link, useParams,
+} from 'react-router-dom';
 
 const Menu = () => {
   const padding = {
@@ -6,9 +9,24 @@ const Menu = () => {
   };
   return (
     <div>
-      <a href="#" style={padding}>anecdotes</a>
-      <a href="#" style={padding}>create new</a>
-      <a href="#" style={padding}>about</a>
+      <Link to="/" style={padding}>Anecdotes</Link>
+      <Link to="/create" style={padding}>Create new</Link>
+      <Link to="/about" style={padding}>About</Link>
+    </div>
+  );
+};
+
+const Anecdote = ({ anecdotes }) => {
+  const { id } = useParams();
+  const anecdote = anecdotes.find((a) => a.id === id);
+  return (
+    <div>
+      <h2>{`${anecdote.content} by ${anecdote.author}`}</h2>
+      <p>{`has ${anecdote.votes} votes`}</p>
+      <p>
+        {'For more info, see '}
+        <a href={anecdote.info}>{anecdote.info}</a>
+      </p>
     </div>
   );
 };
@@ -17,7 +35,11 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map((anecdote) => <li key={anecdote.id}>{anecdote.content}</li>)}
+      {anecdotes.map((anecdote) => (
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
+      ))}
     </ul>
   </div>
 );
@@ -42,16 +64,12 @@ const About = () => (
 
 const Footer = () => (
   <div>
-    Anecdote app for
-    {' '}
+    <hr />
+    {'Anecdote app for '}
     <a href="https://courses.helsinki.fi/fi/tkt21009">Full Stack -websovelluskehitys</a>
-    .
-
-    See
-    {' '}
+    {'. See '}
     <a href="https://github.com/fullstack-hy/routed-anecdotes/blob/master/src/App.js">https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a>
-    {' '}
-    for the source code.
+    {' for the source code.'}
   </div>
 );
 
@@ -133,14 +151,26 @@ const App = () => {
   };
 
   return (
-    <div>
+    <Router>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+
+      <Switch>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/anecdotes/:id">
+          <Anecdote anecdotes={anecdotes} />
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
       <Footer />
-    </div>
+    </Router>
   );
 };
 
