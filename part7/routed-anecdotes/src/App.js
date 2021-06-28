@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import {
   Switch, Route, Link, useRouteMatch, useHistory,
@@ -93,9 +94,9 @@ const Notification = (props) => {
 };
 
 const CreateNew = (props) => {
-  const content = useField('text');
-  const author = useField('text');
-  const info = useField('text');
+  const { reset: resetContent, ...content } = useField('text');
+  const { reset: resetAuthor, ...author } = useField('text');
+  const { reset: resetInfo, ...info } = useField('text');
   const history = useHistory();
 
   const handleSubmit = (e) => {
@@ -109,6 +110,13 @@ const CreateNew = (props) => {
     history.push('/');
   };
 
+  const resetFields = (e) => {
+    e.preventDefault();
+    resetContent();
+    resetAuthor();
+    resetInfo();
+  };
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -117,30 +125,25 @@ const CreateNew = (props) => {
           content
           <input
             name="content"
-            type={content.type}
-            value={content.value}
-            onChange={content.onChange}
+            {...content}
           />
         </div>
         <div>
           author
           <input
             name="author"
-            type={author.type}
-            value={author.value}
-            onChange={author.onChange}
+            {...author}
           />
         </div>
         <div>
           url for more info
           <input
             name="info"
-            type={info.type}
-            value={info.value}
-            onChange={info.onChange}
+            {...info}
           />
         </div>
         <button type="submit">create</button>
+        <button type="button" onClick={resetFields}>reset</button>
       </form>
     </div>
   );
