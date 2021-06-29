@@ -19,6 +19,7 @@
 /part7/routed-anecdotes/node_modules/
 /part7/country-hooks/node_modules/
 /part7/ultimate-hooks/node_modules/
+/part7/bloglist-extended/node_modules/
 
 /.pnp
 .pnp.js
