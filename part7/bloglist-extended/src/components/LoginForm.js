@@ -11,6 +11,7 @@ const LoginForm = ({ handleLogin }) => {
     setUsername('');
     setPassword('');
   };
+
   return (
     <div>
       <h2>Log in to application</h2>
