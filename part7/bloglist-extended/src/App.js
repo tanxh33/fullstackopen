@@ -1,20 +1,31 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
+
 import Notification from './components/Notification';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Toggleable from './components/Toggleable';
-import { checkForLogin, logoutUser, loginUser } from './reducers/userReducer';
-import './index.css';
+import User from './components/User';
+import UserList from './components/UserList';
 
 import { setNotification } from './reducers/notificationReducer';
+import { checkForLogin, logoutUser, loginUser } from './reducers/loginReducer';
+import { getUsers } from './reducers/userReducer';
+
+import './index.css';
 
 const App = () => {
-  const user = useSelector((state) => state.user);
+  const loggedInUser = useSelector((state) => state.login);
+  const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
   const blogFormRef = useRef();
+
+  // Every time the component is rendered, the match will be made.
+  const match = useRouteMatch('/users/:id');
+  const matchedRouteUser = match ? users.find((u) => u.id === match.params.id) : null;
 
   const appBodyStyle = {
     margin: 'auto',
@@ -24,6 +35,7 @@ const App = () => {
   // On load, check if there is a logged-in user from local storage
   useEffect(() => {
     dispatch(checkForLogin());
+    dispatch(getUsers());
   }, []);
 
   const handleLogin = async (username, password) => {
@@ -50,21 +62,33 @@ const App = () => {
 
       <Notification />
 
-      {user === null
-        ? <LoginForm handleLogin={handleLogin} />
-        : (
-          <div>
-            <div className="pb-m">
-              <span>{`Logged in as ${user.name} `}</span>
-              <button type="button" onClick={handleLogout}>Logout</button>
-              <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
-                <BlogForm />
-              </Toggleable>
-            </div>
+      <Switch>
+        <Route path="/users/:id">
+          <User user={matchedRouteUser} />
+        </Route>
 
-            <BlogList />
-          </div>
-        )}
+        <Route path="/users">
+          <UserList users={users} />
+        </Route>
+
+        <Route path="/">
+          {loggedInUser === null
+            ? <LoginForm handleLogin={handleLogin} />
+            : (
+              <div>
+                <div className="pb-m">
+                  <span>{`Logged in as ${loggedInUser.name} `}</span>
+                  <button type="button" onClick={handleLogout}>Logout</button>
+                  <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
+                    <BlogForm />
+                  </Toggleable>
+                </div>
+
+                <BlogList />
+              </div>
+            )}
+        </Route>
+      </Switch>
 
     </div>
   );
