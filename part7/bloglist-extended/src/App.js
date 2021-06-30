@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  Switch, Route, Link, useRouteMatch, useHistory,
+  Switch, Route, useRouteMatch, useHistory,
 } from 'react-router-dom';
 
 import Notification from './components/Notification';
@@ -14,11 +14,12 @@ import User from './components/User';
 import UserList from './components/UserList';
 
 import { setNotification } from './reducers/notificationReducer';
-import { checkForLogin, logoutUser, loginUser } from './reducers/loginReducer';
+import { checkForLogin, logoutUser } from './reducers/loginReducer';
 import { getBlogs, deleteBlog, likeBlog } from './reducers/blogReducer';
 import { getUsers } from './reducers/userReducer';
 
 import './index.css';
+import Navbar from './components/Navbar';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -41,29 +42,12 @@ const App = () => {
   };
 
   // On load, check if there is a logged-in user from local storage
+  // and retrieve all info from API
   useEffect(() => {
     dispatch(checkForLogin());
     dispatch(getBlogs());
     dispatch(getUsers());
   }, []);
-
-  const handleLogin = async (username, password) => {
-    let success;
-    try {
-      await dispatch(loginUser(username, password));
-      dispatch(setNotification('Login successful', 'success'));
-      success = true;
-    } catch (exception) {
-      dispatch(setNotification('Wrong username or password', 'error'));
-      success = false;
-    }
-    return success;
-  };
-
-  const handleLogout = (event) => {
-    event.preventDefault();
-    dispatch(logoutUser());
-  };
 
   // Passed into Blog component
   const likeBlogHandler = async (id) => {
@@ -101,57 +85,52 @@ const App = () => {
   };
 
   return (
-    <div style={appBodyStyle}>
-      <h1 className="pb-s">
-        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-          blogs!
-        </Link>
-      </h1>
+    <>
+      <Navbar user={loggedInUser} />
+      <div style={appBodyStyle}>
 
-      <Notification />
+        <Notification />
 
-      <Switch>
-        <Route path="/users/:id">
-          <User user={matchedRouteUser} />
-        </Route>
+        {loggedInUser === null
+          ? <LoginForm />
+          : (
+            <Switch>
+              <Route path="/users/:id">
+                <User user={matchedRouteUser} />
+              </Route>
 
-        <Route path="/users">
-          <UserList users={users} />
-        </Route>
+              <Route path="/users">
+                <UserList users={users} />
+              </Route>
 
-        <Route path="/blogs/:id">
-          <Blog
-            blog={matchedRouteBlog}
-            expanded
-            likeBlog={() => likeBlogHandler(matchedRouteBlog.id)}
-            deleteBlog={() => deleteBlogHandler(matchedRouteBlog.id)}
-          />
-        </Route>
-
-        <Route path="/">
-          {loggedInUser === null
-            ? <LoginForm handleLogin={handleLogin} />
-            : (
-              <div>
-                <div className="pb-m">
-                  <span>{`Logged in as ${loggedInUser.name} `}</span>
-                  <button type="button" onClick={handleLogout}>Logout</button>
-                  <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
-                    <BlogForm />
-                  </Toggleable>
-                </div>
-
-                <BlogList
-                  blogs={blogs}
-                  likeBlogHandler={likeBlogHandler}
-                  deleteBlogHandler={deleteBlogHandler}
+              <Route path="/blogs/:id">
+                <Blog
+                  blog={matchedRouteBlog}
+                  expanded
+                  likeBlog={() => likeBlogHandler(matchedRouteBlog.id)}
+                  deleteBlog={() => deleteBlogHandler(matchedRouteBlog.id)}
                 />
-              </div>
-            )}
-        </Route>
-      </Switch>
+              </Route>
 
-    </div>
+              <Route path="/">
+                <div>
+                  <div className="pb-m">
+                    <Toggleable buttonLabel="Add new blog" ref={blogFormRef}>
+                      <BlogForm />
+                    </Toggleable>
+                  </div>
+                  <BlogList
+                    blogs={blogs}
+                    likeBlogHandler={likeBlogHandler}
+                    deleteBlogHandler={deleteBlogHandler}
+                  />
+                </div>
+              </Route>
+            </Switch>
+          )}
+
+      </div>
+    </>
   );
 };
 
