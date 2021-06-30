@@ -1,21 +1,29 @@
 import React from 'react';
-import Blog from './Blog';
+import { Link } from 'react-router-dom';
 
-const BlogList = ({ blogs, likeBlogHandler, deleteBlogHandler }) => {
+const BlogList = ({ blogs }) => {
+  const blogStyle = {
+    marginBottom: '1rem',
+    padding: '1rem',
+    border: '1px solid #ccc',
+    borderRadius: '0.25rem',
+  };
+
   if (!blogs) {
     return null;
   }
 
   return (
-    blogs.map((blog) => (
-      <Blog
-        key={blog.id}
-        blog={blog}
-        expanded={false}
-        likeBlog={() => likeBlogHandler(blog.id)}
-        deleteBlog={() => deleteBlogHandler(blog.id)}
-      />
-    ))
+    <ul style={{ listStyleType: 'none' }}>
+      {blogs.map((blog) => (
+        <li key={blog.id} style={blogStyle} className="blog">
+          <p>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </p>
+          <p>{blog.author}</p>
+        </li>
+      ))}
+    </ul>
   );
 };
 

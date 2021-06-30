@@ -88,7 +88,6 @@ const App = () => {
     <>
       <Navbar user={loggedInUser} />
       <div style={appBodyStyle}>
-
         <Notification />
 
         {loggedInUser === null
@@ -106,7 +105,6 @@ const App = () => {
               <Route path="/blogs/:id">
                 <Blog
                   blog={matchedRouteBlog}
-                  expanded
                   likeBlog={() => likeBlogHandler(matchedRouteBlog.id)}
                   deleteBlog={() => deleteBlogHandler(matchedRouteBlog.id)}
                 />
@@ -119,16 +117,11 @@ const App = () => {
                       <BlogForm />
                     </Toggleable>
                   </div>
-                  <BlogList
-                    blogs={blogs}
-                    likeBlogHandler={likeBlogHandler}
-                    deleteBlogHandler={deleteBlogHandler}
-                  />
+                  <BlogList blogs={blogs} />
                 </div>
               </Route>
             </Switch>
           )}
-
       </div>
     </>
   );

@@ -50,6 +50,35 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(newBlog);
 });
 
+// Post a comment
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { body, token, userid } = request;
+  const blogId = request.params.id;
+  const { comment } = body;
+  console.log(blogId, comment);
+
+  if (!token || !userid) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const blog = await Blog.findById(blogId);
+  // blog.set({
+  //   comments: blog.comments.concat({ content: comment }),
+  // });
+  // await blog.save();
+
+  const updatedBlog = await Blog
+    .findByIdAndUpdate(
+      blogId,
+      { comments: blog.comments.concat({ content: comment }) },
+      { new: true },
+    )
+    .populate('user', { username: 1, name: 1 });
+
+  console.log(updatedBlog);
+  response.status(201).json(updatedBlog);
+});
+
 blogsRouter.delete('/:id', async (request, response) => {
   const blogid = request.params.id;
 
