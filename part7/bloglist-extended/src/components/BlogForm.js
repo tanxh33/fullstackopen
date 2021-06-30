@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBlog } from '../reducers/blogReducer';
+import { logoutUser } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
 const BlogForm = () => {
@@ -22,13 +23,20 @@ const BlogForm = () => {
         }),
       );
       dispatch(setNotification(`Blog added: ${newBlog.title} by ${newBlog.author}`, 'success'));
+      setBlogTitle('');
+      setBlogAuthor('');
+      setBlogUrl('');
     } catch (exception) {
-      dispatch(setNotification('Add blog failed', 'error'));
+      const errorMessage = exception.response.data.error;
+      if (errorMessage === 'token expired') {
+        dispatch(setNotification('Your login has expired', 'error'));
+        dispatch(logoutUser());
+      } else if (errorMessage.includes('Blog validation failed')) {
+        dispatch(setNotification('Title and URL are required fields', 'error'));
+      } else {
+        dispatch(setNotification('Add blog failed', 'error'));
+      }
     }
-
-    setBlogTitle('');
-    setBlogAuthor('');
-    setBlogUrl('');
   };
 
   return (
