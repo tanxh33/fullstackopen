@@ -15,8 +15,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
     }
 
     try {
-      const response = await dispatch(addComment(id, content.trim()));
-      console.log(response);
+      await dispatch(addComment(id, content.trim()));
       setCommentText('');
     } catch (exception) {
       const errorMessage = exception.response.data.error;

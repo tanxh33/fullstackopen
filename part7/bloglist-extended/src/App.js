@@ -14,7 +14,7 @@ import User from './components/User';
 import UserList from './components/UserList';
 
 import { setNotification } from './reducers/notificationReducer';
-import { checkForLogin, logoutUser } from './reducers/loginReducer';
+import { checkForLogin, loginUser, logoutUser } from './reducers/loginReducer';
 import { getBlogs, deleteBlog, likeBlog } from './reducers/blogReducer';
 import { getUsers } from './reducers/userReducer';
 
@@ -48,6 +48,16 @@ const App = () => {
     dispatch(getBlogs());
     dispatch(getUsers());
   }, []);
+
+  // Passed into <LoginForm /> so it doesn't cause problems when it un-renders
+  const loginHandler = async (username, password) => {
+    try {
+      await dispatch(loginUser(username, password));
+      dispatch(setNotification('Login successful', 'success'));
+    } catch (exception) {
+      dispatch(setNotification('Wrong username or password', 'error'));
+    }
+  };
 
   // Passed into Blog component
   const likeBlogHandler = async (id) => {
@@ -91,7 +101,7 @@ const App = () => {
         <Notification />
 
         {loggedInUser === null
-          ? <LoginForm />
+          ? <LoginForm loginHandler={loginHandler} />
           : (
             <Switch>
               <Route path="/users/:id">
