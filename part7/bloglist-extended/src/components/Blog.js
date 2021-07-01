@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { addComment } from '../reducers/blogReducer';
 import { logoutUser } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import {
+  Button, Input, ListItems, ListItem,
+} from '../Styled/Components';
 
 const Blog = ({ blog, likeBlog, deleteBlog }) => {
   const [commentText, setCommentText] = useState('');
@@ -11,6 +14,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
 
   const submitComment = async (id, content) => {
     if (content.trim() === '') {
+      dispatch(setNotification('Comment must have content!', 'danger'));
       return;
     }
 
@@ -20,10 +24,10 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
     } catch (exception) {
       const errorMessage = exception.response.data.error;
       if (errorMessage === 'token expired') {
-        dispatch(setNotification('Your login has expired', 'error'));
+        dispatch(setNotification('Your login has expired', 'danger'));
         dispatch(logoutUser());
       } else {
-        dispatch(setNotification('Add comment failed', 'error'));
+        dispatch(setNotification('Add comment failed', 'danger'));
       }
     }
   };
@@ -42,32 +46,42 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
     <div>
       <h2>{blog.title}</h2>
       <p>{blog.author}</p>
-      <Link to={blog.url} target="_blank" rel="noreferrer">{blog.url}</Link>
+      <a href={blog.url} target="_blank" rel="noreferrer">{blog.url}</a>
       <div>
         {'Likes: '}
         <span className="blog-likes">{blog.likes}</span>
         {' '}
-        <button onClick={likeBlog} type="button">Like</button>
+        <Button onClick={likeBlog} type="button">Like</Button>
       </div>
-      <p>{`${blog.user.name}`}</p>
-      <button onClick={deleteBlog} type="button" className="error mt-s">Delete</button>
-      <div style={{ margin: '1rem auto' }}>
+      <p>
+        {'Submitted by: '}
+        <Link to={`/users/${blog.user.id}`}>
+          {blog.user.name}
+        </Link>
+      </p>
+      <Button onClick={deleteBlog} type="button" danger className="mt-s">Delete</Button>
+
+      <br />
+      <br />
+      <hr />
+
+      <div className="my-s">
         <h3 className="pb-xs">Comments</h3>
         <form onSubmit={(e) => { e.preventDefault(); submitComment(blog.id, commentText); }}>
-          <input
+          <Input
             id="comment"
             type="text"
             value={commentText}
             name="Comment"
             onChange={({ target }) => setCommentText(target.value)}
           />
-          <button id="login-button" type="submit">Add comment</button>
+          <Button id="login-button" type="submit">Add comment</Button>
         </form>
-        <ul>
+        <ListItems>
           {blog.comments.map((comment) => (
-            <li key={`${comment.id}`}>{comment.content}</li>
+            <ListItem key={`${comment.id}`}>{comment.content}</ListItem>
           ))}
-        </ul>
+        </ListItems>
       </div>
     </div>
   );

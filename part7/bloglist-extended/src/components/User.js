@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ListItems, ListItem } from '../Styled/Components';
 
 const User = ({ user }) => {
   if (!user) {
@@ -11,15 +13,15 @@ const User = ({ user }) => {
 
   return (
     <div>
-      <h2>{user.name}</h2>
+      <h2 className="pb-s">{user.name}</h2>
       <h3>Added blogs</h3>
-      <ul>
+      <ListItems>
         {user.blogs.map((blog) => (
-          <li key={blog.id}>
-            {blog.title}
-          </li>
+          <ListItem key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </ListItem>
         ))}
-      </ul>
+      </ListItems>
     </div>
   );
 };

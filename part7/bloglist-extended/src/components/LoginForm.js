@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
-// import { loginUser } from '../reducers/loginReducer';
-// import { setNotification } from '../reducers/notificationReducer';
+import { Button, Input } from '../Styled/Components';
 
 const LoginForm = ({ loginHandler }) => {
-  // const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,12 +14,12 @@ const LoginForm = ({ loginHandler }) => {
 
   return (
     <div>
-      <h2>Log in to application</h2>
+      <h2>Log in</h2>
 
       <form onSubmit={login}>
         <div>
           Username
-          <input
+          <Input
             id="username"
             type="text"
             value={username}
@@ -32,7 +29,7 @@ const LoginForm = ({ loginHandler }) => {
         </div>
         <div>
           Password
-          <input
+          <Input
             id="password"
             type="password"
             value={password}
@@ -40,7 +37,7 @@ const LoginForm = ({ loginHandler }) => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button id="login-button" type="submit">Login</button>
+        <Button primary id="login-button" type="submit">Login</Button>
       </form>
     </div>
   );

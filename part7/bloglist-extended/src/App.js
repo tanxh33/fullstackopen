@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import Notification from './components/Notification';
+import Navbar from './components/Navbar';
 import Blog from './components/Blog';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
@@ -18,8 +19,9 @@ import { checkForLogin, loginUser, logoutUser } from './reducers/loginReducer';
 import { getBlogs, deleteBlog, likeBlog } from './reducers/blogReducer';
 import { getUsers } from './reducers/userReducer';
 
+import { GlobalStyle } from './Styled/Global';
+import { Container } from './Styled/Components';
 import './index.css';
-import Navbar from './components/Navbar';
 
 const App = () => {
   const loggedInUser = useSelector((state) => state.login);
@@ -36,11 +38,6 @@ const App = () => {
   const matchedRouteUser = matchUser ? users.find((u) => u.id === matchUser.params.id) : null;
   const matchedRouteBlog = matchBlog ? blogs.find((b) => b.id === matchBlog.params.id) : null;
 
-  const appBodyStyle = {
-    margin: 'auto',
-    padding: '2rem',
-  };
-
   // On load, check if there is a logged-in user from local storage
   // and retrieve all info from API
   useEffect(() => {
@@ -55,7 +52,7 @@ const App = () => {
       await dispatch(loginUser(username, password));
       dispatch(setNotification('Login successful', 'success'));
     } catch (exception) {
-      dispatch(setNotification('Wrong username or password', 'error'));
+      dispatch(setNotification('Wrong username or password', 'danger'));
     }
   };
 
@@ -66,10 +63,10 @@ const App = () => {
       await dispatch(likeBlog(id, blog));
     } catch (exception) {
       if (exception.response.data.error === 'token expired') {
-        dispatch(setNotification('Your login has expired', 'error'));
+        dispatch(setNotification('Your login has expired', 'danger'));
         dispatch(logoutUser());
       } else {
-        dispatch(setNotification('Like blog failed', 'error'));
+        dispatch(setNotification('Like blog failed', 'danger'));
       }
     }
   };
@@ -85,10 +82,10 @@ const App = () => {
         history.push('/');
       } catch (exception) {
         if (exception.response.data.error === 'token expired') {
-          dispatch(setNotification('Your login has expired', 'error'));
+          dispatch(setNotification('Your login has expired', 'danger'));
           dispatch(logoutUser());
         } else {
-          dispatch(setNotification('Delete blog failed', 'error'));
+          dispatch(setNotification('Delete blog failed', 'danger'));
         }
       }
     }
@@ -96,9 +93,11 @@ const App = () => {
 
   return (
     <>
+      <GlobalStyle />
       <Navbar user={loggedInUser} />
-      <div style={appBodyStyle}>
+      <Container>
         <Notification />
+        <h1 className="mb-s">blogs!</h1>
 
         {loggedInUser === null
           ? <LoginForm loginHandler={loginHandler} />
@@ -132,7 +131,7 @@ const App = () => {
               </Route>
             </Switch>
           )}
-      </div>
+      </Container>
     </>
   );
 };

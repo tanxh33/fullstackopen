@@ -1,32 +1,21 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import {
+  Nav, NavBrand, NavItems, NavItem, NavStatus, NavItemButton,
+} from '../Styled/Nav';
 
 const Logo = () => (
-  <h1>
-    <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-      blogs!
-    </Link>
-  </h1>
+  <NavBrand to="/">
+    blogs!
+  </NavBrand>
 );
 
 const Navbar = ({ user }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const navbarStyle = {
-    background: '#c7ef77',
-    padding: '1rem',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: '0.5rem',
-  };
-  const rightAlign = {
-    marginLeft: 'auto',
-  };
 
   const logout = (event) => {
     event.preventDefault();
@@ -38,18 +27,20 @@ const Navbar = ({ user }) => {
   return (
     user
       ? (
-        <div style={navbarStyle}>
-          <Logo />
-          <Link to="/">Blogs</Link>
-          <Link to="/users">Users</Link>
-          <span style={rightAlign}>{`Logged in as ${user.name}`}</span>
-          <button type="button" onClick={logout}>Logout</button>
-        </div>
+        <Nav>
+          <NavItems>
+            <Logo />
+            <NavItem to="/">Blogs</NavItem>
+            <NavItem to="/users">Users</NavItem>
+            <NavStatus push>{`Logged in as ${user.name}`}</NavStatus>
+            <NavItemButton primary onClick={logout}>Logout</NavItemButton>
+          </NavItems>
+        </Nav>
       )
       : (
-        <div style={navbarStyle}>
+        <Nav>
           <Logo />
-        </div>
+        </Nav>
       )
   );
 };

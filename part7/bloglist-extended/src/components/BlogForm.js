@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { createBlog } from '../reducers/blogReducer';
 import { logoutUser } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import { Button, Input, Label } from '../Styled/Components';
 
 const BlogForm = () => {
   const dispatch = useDispatch();
@@ -29,55 +30,49 @@ const BlogForm = () => {
     } catch (exception) {
       const errorMessage = exception.response.data.error;
       if (errorMessage === 'token expired') {
-        dispatch(setNotification('Your login has expired', 'error'));
+        dispatch(setNotification('Your login has expired', 'danger'));
         dispatch(logoutUser());
       } else if (errorMessage.includes('Blog validation failed')) {
-        dispatch(setNotification('Title and URL are required fields', 'error'));
+        dispatch(setNotification('Title and URL are required fields', 'danger'));
       } else {
-        dispatch(setNotification('Add blog failed', 'error'));
+        dispatch(setNotification('Add blog failed', 'danger'));
       }
     }
   };
 
   return (
-    <div className="blogFormDiv my-s">
+    <div>
       <h2 className="pb-s">Create new blog entry</h2>
 
       <form onSubmit={addBlog}>
-        <div className="pb-s">
-          <label htmlFor="input-blog-title">
-            Title
-            <input
-              id="input-blog-title"
-              value={blogTitle}
-              onChange={({ target }) => setBlogTitle(target.value)}
-            />
-          </label>
-        </div>
+        <Label htmlFor="input-blog-title">
+          Title
+          <Input
+            id="input-blog-title"
+            value={blogTitle}
+            onChange={({ target }) => setBlogTitle(target.value)}
+          />
+        </Label>
 
-        <div className="pb-s">
-          <label htmlFor="input-blog-author">
-            Author
-            <input
-              id="input-blog-author"
-              value={blogAuthor}
-              onChange={({ target }) => setBlogAuthor(target.value)}
-            />
-          </label>
-        </div>
+        <Label htmlFor="input-blog-author">
+          Author
+          <Input
+            id="input-blog-author"
+            value={blogAuthor}
+            onChange={({ target }) => setBlogAuthor(target.value)}
+          />
+        </Label>
 
-        <div className="pb-s">
-          <label htmlFor="input-blog-url">
-            URL
-            <input
-              id="input-blog-url"
-              value={blogUrl}
-              onChange={({ target }) => setBlogUrl(target.value)}
-            />
+        <Label htmlFor="input-blog-url">
+          URL
+          <Input
+            id="input-blog-url"
+            value={blogUrl}
+            onChange={({ target }) => setBlogUrl(target.value)}
+          />
+        </Label>
 
-          </label>
-        </div>
-        <button id="create-blog-button" type="submit">Create</button>
+        <Button primary id="create-blog-button" type="submit">Create</Button>
       </form>
     </div>
   );

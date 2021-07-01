@@ -1,4 +1,5 @@
 import React, { useState, useImperativeHandle } from 'react';
+import { Button } from '../Styled/Components';
 
 // Component function wrapped inside forwardRef function call.
 const Toggleable = React.forwardRef((props, ref) => {
@@ -18,12 +19,12 @@ const Toggleable = React.forwardRef((props, ref) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility} type="button">{props.buttonLabel}</button>
+        <Button primary onClick={toggleVisibility} type="button">{props.buttonLabel}</Button>
       </div>
       <div style={showWhenVisible} className="toggleableContent">
         {/* props.children references the child components, empty array if none */}
         {props.children}
-        <button onClick={toggleVisibility} type="button">Cancel</button>
+        <Button onClick={toggleVisibility} type="button">Cancel</Button>
       </div>
     </div>
   );
