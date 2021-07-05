@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server');
-const { argsToArgsConfig } = require('graphql/type/definition');
+const { v4: uuidv4 } = require('uuid');
 
 let authors = [
   {
@@ -90,7 +90,7 @@ let books = [
 ];
 
 const typeDefs = gql`
-  type Books {
+  type Book {
     title: String!
     published: Int!
     author: String!
@@ -98,7 +98,7 @@ const typeDefs = gql`
     id: ID!
   }
 
-  type Authors {
+  type Author {
     name: String!
     born: Int
     bookCount: Int
@@ -108,8 +108,21 @@ const typeDefs = gql`
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(author: String, genre: String): [Books!]!
-    allAuthors: [Authors!]!
+    allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
+  }
+
+  type Mutation {
+    addBook (
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String!]!
+    ): Book
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ): Author
   }
 `;
 
@@ -125,12 +138,33 @@ const resolvers = {
     },
     allAuthors: () => authors,
   },
-  Authors: {
+  Author: {
     // Allow bookCount to be queried for Authors.
     bookCount: (root) => {
       return books.filter((b) => b.author === root.name).length;
     }
   },
+  Mutation: {
+    addBook: (root, args) => {
+      if (!authors.find((a) => a.name === args.author)) {
+        // If author does not exist, create new Author
+        const newAuthor = { name: args.author, id: uuidv4() }
+        authors.push(newAuthor);
+      }
+      const book = { ...args, id: uuidv4() };
+      books = books.concat(book);
+      return book;
+    },
+    editAuthor: (root, args) => {
+      const author = authors.find((a) => a.name === args.name);
+      if (!author) {
+        return null;
+      }
+      const updatedAuthor = { ...author, born: args.setBornTo }
+      authors = authors.map((a) => a.name === args.name ? updatedAuthor : a);
+      return updatedAuthor;
+    }
+  }
 };
 
 const server = new ApolloServer({
