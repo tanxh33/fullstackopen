@@ -43,6 +43,7 @@ const App = () => {
 
       <AuthorForm
         show={page === 'authors'}
+        authors={data.allAuthors}
         setError={notify}
       />
 

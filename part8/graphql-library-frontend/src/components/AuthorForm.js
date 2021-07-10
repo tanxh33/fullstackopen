@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { EDIT_AUTHOR } from '../queries';
 
-const AuthorForm = ({ show, setError }) => {
+const AuthorForm = ({ show, authors, setError }) => {
   const [name, setName] = useState('');
   const [birthyear, setBirthyear] = useState('');
 
@@ -10,7 +10,6 @@ const AuthorForm = ({ show, setError }) => {
 
   const submit = (event) => {
     event.preventDefault();
-    console.log('ok');
 
     if (name.trim() && birthyear.trim()) {
       const birthyearInt = parseInt(birthyear, 10);
@@ -42,10 +41,14 @@ const AuthorForm = ({ show, setError }) => {
       <form onSubmit={submit}>
         <div>
           name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          <select value={name} onChange={({ target }) => setName(target.value)}>
+            <option value="">{' '}</option>
+            {authors.map((a) => (
+              <option value={a.name} key={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           born

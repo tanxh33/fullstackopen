@@ -14,7 +14,7 @@ const NewBook = ({ show, setError }) => {
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_INFO }],
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
 
@@ -24,8 +24,6 @@ const NewBook = ({ show, setError }) => {
 
   const submit = async (event) => {
     event.preventDefault();
-
-    console.log('Add book...');
 
     if (title.trim() && author.trim() && published.trim()) {
       const publishedInt = parseInt(published, 10);
