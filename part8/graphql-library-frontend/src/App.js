@@ -5,6 +5,7 @@ import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
 import Notify from './components/Notify';
+import AuthorForm from './components/AuthorForm';
 
 const App = () => {
   const [page, setPage] = useState('authors');
@@ -38,6 +39,11 @@ const App = () => {
       <Authors
         show={page === 'authors'}
         authors={data.allAuthors}
+      />
+
+      <AuthorForm
+        show={page === 'authors'}
+        setError={notify}
       />
 
       <Books
