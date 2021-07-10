@@ -1,32 +1,27 @@
 import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { ALL_INFO } from './queries';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
-
-const ALL_INFO = gql`
-query {
-  allAuthors {
-    name
-    born
-    bookCount
-    id
-  }
-  allBooks {
-    title
-    author
-    published
-    id
-  }
-}
-`;
+import Notify from './components/Notify';
 
 const App = () => {
   const [page, setPage] = useState('authors');
+  const [errorMessage, setErrorMessage] = useState(null);
 
+  // Use option { pollInterval: 2000 } to poll the query every 2s (simple but wasteful!)
   const result = useQuery(ALL_INFO);
+  const { loading, data } = result;
 
-  if (result.loading) {
+  const notify = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+  };
+
+  if (loading) {
     return <div>loading...</div>;
   }
 
@@ -38,18 +33,21 @@ const App = () => {
         <button type="button" onClick={() => setPage('add')}>add book</button>
       </div>
 
+      <Notify errorMessage={errorMessage} />
+
       <Authors
         show={page === 'authors'}
-        authors={result.data.allAuthors}
+        authors={data.allAuthors}
       />
 
       <Books
         show={page === 'books'}
-        books={result.data.allBooks}
+        books={data.allBooks}
       />
 
       <NewBook
         show={page === 'add'}
+        setError={notify}
       />
 
     </div>

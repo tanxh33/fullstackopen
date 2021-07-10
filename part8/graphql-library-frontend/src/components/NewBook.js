@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { CREATE_BOOK, ALL_INFO } from '../queries';
 
-const NewBook = ({ show }) => {
+const NewBook = ({ show, setError }) => {
   const [title, setTitle] = useState('');
-  const [author, setAuhtor] = useState('');
+  const [author, setAuthor] = useState('');
   const [published, setPublished] = useState('');
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
+
+  // Define the mutation function
+  // (set to update cache afterwards, but this doesn't update for other users)
+  const [createBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [{ query: ALL_INFO }],
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   if (!show) {
     return null;
@@ -16,9 +27,21 @@ const NewBook = ({ show }) => {
 
     console.log('Add book...');
 
+    if (title.trim() && author.trim() && published.trim()) {
+      const publishedInt = parseInt(published, 10);
+      createBook({
+        variables: {
+          title, author, published: publishedInt, genres,
+        },
+      });
+    } else {
+      setError('Fields cannot be empty!');
+      return;
+    }
+
     setTitle('');
     setPublished('');
-    setAuhtor('');
+    setAuthor('');
     setGenres([]);
     setGenre('');
   };
@@ -42,7 +65,7 @@ const NewBook = ({ show }) => {
           author
           <input
             value={author}
-            onChange={({ target }) => setAuhtor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
