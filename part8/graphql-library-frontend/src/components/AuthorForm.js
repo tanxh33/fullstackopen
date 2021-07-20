@@ -6,11 +6,19 @@ const AuthorForm = ({ show, authors, setError }) => {
   const [name, setName] = useState('');
   const [birthyear, setBirthyear] = useState('');
 
-  const [editAuthor, result] = useMutation(EDIT_AUTHOR);
+  const [editAuthor, result] = useMutation(EDIT_AUTHOR, {
+    onError: ({ graphQLErrors, networkError }) => {
+      if (graphQLErrors.length > 0) {
+        setError(graphQLErrors[0].message);
+      }
+      if (networkError) {
+        setError(networkError);
+      }
+    },
+  });
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
-
     if (name.trim() && birthyear.trim()) {
       const birthyearInt = parseInt(birthyear, 10);
       // Cache updates automatically because uses ID
@@ -19,7 +27,6 @@ const AuthorForm = ({ show, authors, setError }) => {
       setError('Fields cannot be empty!');
       return;
     }
-
     setName('');
     setBirthyear('');
   };

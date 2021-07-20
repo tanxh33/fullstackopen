@@ -9,8 +9,13 @@ const LoginForm = ({
   const [password, setPassword] = useState('');
 
   const [login, result] = useMutation(LOGIN, {
-    onError: (error) => {
-      setError(error.graphQLErrors[0].message);
+    onError: ({ graphQLErrors, networkError }) => {
+      if (graphQLErrors.length > 0) {
+        setError(graphQLErrors[0].message);
+      }
+      if (networkError) {
+        setError(networkError);
+      }
     },
   });
 
@@ -18,13 +23,15 @@ const LoginForm = ({
     if (result.data) {
       const token = result.data.login.value;
       setToken(token);
-      window.localStorage.setItem('library-user-token', { token });
+      window.localStorage.setItem('library-user-token', token);
     }
-  }, [result.data]);
+  }, [result.data]); // eslint-disable-line
 
   const submit = async (event) => {
     event.preventDefault();
     login({ variables: { username, password } });
+    setUsername('');
+    setPassword('');
     setPage('authors');
   };
 

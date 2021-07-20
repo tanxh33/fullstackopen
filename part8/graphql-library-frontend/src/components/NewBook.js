@@ -13,8 +13,13 @@ const NewBook = ({ show, setError }) => {
   // (set to update cache afterwards, but this doesn't update for other users)
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_INFO }],
-    onError: (error) => {
-      console.error(error);
+    onError: ({ graphQLErrors, networkError }) => {
+      if (graphQLErrors.length > 0) {
+        setError(graphQLErrors[0].message);
+      }
+      if (networkError) {
+        setError(networkError);
+      }
     },
   });
 
