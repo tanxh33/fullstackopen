@@ -1,11 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 const { ApolloServer, gql, UserInputError } = require('apollo-server');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Author = require('./models/author');
 const Book = require('./models/book');
+const User = require('./models/user');
 
 const { MONGODB_URI } = process.env;
+const JWT_SECRET = process.env.SECRET;
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true,
@@ -43,11 +46,22 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -59,6 +73,16 @@ const typeDefs = gql`
       name: String!
       setBornTo: Int!
     ): Author
+
+    createUser (
+      username: String!
+      favoriteGenre: String!
+    ): User
+
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `;
 
@@ -86,6 +110,7 @@ const resolvers = {
       }
     },
     allAuthors: async () => Author.find({}),
+    me: (root, args, context) => context.currentUser,
   },
 
   Author: {
@@ -140,12 +165,52 @@ const resolvers = {
       { born: args.setBornTo },
       { new: true },
     ),
+
+    createUser: (root, args) => {
+      const user = new User({ ...args }); // Provide username and favoriteGenre
+      return user.save().catch((error) => {
+        throw new UserInputError(error.message, { invalidArgs: args });
+      });
+    },
+
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      // We use a hardcoded password for convenience, but we should define passwordHash
+      // in the User model and make use of something like bcrypt to compare.
+      if (!user || args.password !== 'password123') {
+        throw new UserInputError('Wrong credentials');
+      }
+
+      // If the username/password pair is valid, return a jwt-token.
+      // In GraphQL playground, the authorization header "bearer " is added to a query.
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+
+      return { value: jwt.sign(userForToken, JWT_SECRET) };
+    },
   },
 };
 
+// Server object
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    // The returned object is given to all resolvers as a third parameter,
+    // useful for things that are shared by multiple resolvers (like user identification).
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
+      console.log(decodedToken);
+      const currentUser = await User.findById(decodedToken.id);
+      console.log(currentUser);
+      return { currentUser };
+    }
+    return undefined;
+  },
 });
 
 server.listen().then(({ url }) => {
