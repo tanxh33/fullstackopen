@@ -10,7 +10,12 @@ query {
   }
   allBooks {
     title
-    author
+    author {
+      name
+      born
+      bookCount
+      id
+    }
     published
     id
   }
