@@ -8,6 +8,7 @@ const Authors = ({ show, authors }) => {
   return (
     <div>
       <h2>authors</h2>
+
       <table>
         <tbody>
           <tr>
@@ -28,7 +29,6 @@ const Authors = ({ show, authors }) => {
           ))}
         </tbody>
       </table>
-
     </div>
   );
 };
