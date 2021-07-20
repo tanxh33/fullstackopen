@@ -1,5 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-const { ApolloServer, gql, UserInputError } = require('apollo-server');
+const {
+  ApolloServer, gql, UserInputError, AuthenticationError,
+} = require('apollo-server');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -122,9 +124,15 @@ const resolvers = {
   },
 
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, { currentUser }) => {
+      const { input } = args;
+
+      // currentUser is destructured from the "global" context variable
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated');
+      }
+
       try {
-        const { input } = args;
         const foundAuthor = await Author.find({ name: input.author.name });
         let authorId;
         if (foundAuthor.length !== 0) {
@@ -149,7 +157,11 @@ const resolvers = {
       }
     },
 
-    addAuthor: async (root, args) => {
+    addAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated');
+      }
+
       // Create new Author object and save to MongoDB
       const author = new Author({ ...args.input });
       try {
@@ -160,11 +172,17 @@ const resolvers = {
     },
 
     // Update birth year and return modified object
-    editAuthor: async (root, args) => Author.findOneAndUpdate(
-      { name: args.name },
-      { born: args.setBornTo },
-      { new: true },
-    ),
+    editAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('Not authenticated');
+      }
+
+      return Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }, // Return the modified Author object
+      );
+    },
 
     createUser: (root, args) => {
       const user = new User({ ...args }); // Provide username and favoriteGenre
@@ -204,9 +222,7 @@ const server = new ApolloServer({
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
-      console.log(decodedToken);
       const currentUser = await User.findById(decodedToken.id);
-      console.log(currentUser);
       return { currentUser };
     }
     return undefined;
