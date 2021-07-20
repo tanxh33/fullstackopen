@@ -9,17 +9,15 @@ const Authors = ({ show, authors }) => {
     <div>
       <h2>authors</h2>
 
-      <table>
-        <tbody>
+      <table style={{ textAlign: 'left' }}>
+        <thead>
           <tr>
-            <th>{' '}</th>
-            <th>
-              born
-            </th>
-            <th>
-              books
-            </th>
+            <th>name</th>
+            <th>born</th>
+            <th>books</th>
           </tr>
+        </thead>
+        <tbody>
           {authors.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
