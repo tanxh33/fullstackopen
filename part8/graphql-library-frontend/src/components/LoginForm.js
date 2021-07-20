@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { LOGIN } from '../queries';
 
 const LoginForm = ({
-  show, setPage, setError, setToken,
+  show, setPage, setNotification, setToken,
 }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -11,10 +11,10 @@ const LoginForm = ({
   const [login, result] = useMutation(LOGIN, {
     onError: ({ graphQLErrors, networkError }) => {
       if (graphQLErrors.length > 0) {
-        setError(graphQLErrors[0].message);
+        setNotification(graphQLErrors[0].message, 'error');
       }
       if (networkError) {
-        setError(networkError);
+        setNotification(networkError, 'error');
       }
     },
   });

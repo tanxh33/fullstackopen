@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_BOOK, ALL_INFO } from '../queries';
 
-const NewBook = ({ show, setError }) => {
+const NewBook = ({ show, setNotification }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [published, setPublished] = useState('');
@@ -15,10 +15,10 @@ const NewBook = ({ show, setError }) => {
     refetchQueries: [{ query: ALL_INFO }],
     onError: ({ graphQLErrors, networkError }) => {
       if (graphQLErrors.length > 0) {
-        setError(graphQLErrors[0].message);
+        setNotification(graphQLErrors[0].message, 'error');
       }
       if (networkError) {
-        setError(networkError);
+        setNotification(networkError, 'error');
       }
     },
   });
@@ -37,8 +37,9 @@ const NewBook = ({ show, setError }) => {
           title, author, published: publishedInt, genres,
         },
       });
+      setNotification(`${title} by ${author} added.`, 'success');
     } else {
-      setError('Fields cannot be empty!');
+      setNotification('Fields cannot be empty!', 'error');
       return;
     }
 
