@@ -25,5 +25,6 @@ module.exports = {
     'react/jsx-filename-extension': 0,
     'linebreak-style': 0,
     'react/prop-types': 0,
+    'react/button-has-type': 0,
   },
 };

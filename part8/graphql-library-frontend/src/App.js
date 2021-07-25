@@ -46,16 +46,16 @@ const App = () => {
   return (
     <div>
       <div>
-        <button type="button" onClick={() => setPage('authors')}>authors</button>
-        <button type="button" onClick={() => setPage('books')}>books</button>
+        <button disabled={page === 'authors'} onClick={() => setPage('authors')}>authors</button>
+        <button disabled={page === 'books'} onClick={() => setPage('books')}>books</button>
         {token
           ? (
             <>
-              <button type="button" onClick={() => setPage('add')}>add book</button>
-              <button type="button" onClick={() => logout()}>logout</button>
+              <button disabled={page === 'add'} onClick={() => setPage('add')}>add book</button>
+              <button disabled={page === 'logout'} onClick={() => logout()}>logout</button>
             </>
           )
-          : <button type="button" onClick={() => setPage('login')}>login</button>}
+          : <button disabled={page === 'login'} onClick={() => setPage('login')}>login</button>}
       </div>
 
       <Notify notification={notification} />
