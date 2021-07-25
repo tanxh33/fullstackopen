@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { decode } from 'jsonwebtoken';
 import { LOGIN } from '../queries';
 
 const LoginForm = ({
-  show, setPage, setNotification, setToken,
+  show, setPage, setToken, setUserFavGenre, setNotification,
 }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +24,7 @@ const LoginForm = ({
     if (result.data) {
       const token = result.data.login.value;
       setToken(token);
+      setUserFavGenre(decode(token).favoriteGenre);
       window.localStorage.setItem('library-user-token', token);
     }
   }, [result.data]); // eslint-disable-line

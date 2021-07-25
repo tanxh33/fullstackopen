@@ -20,9 +20,9 @@ const Books = ({ show, books }) => {
     <div>
       <h2>books</h2>
       <span>genres: </span>
-      <FilterButton content="all genres" disabled={!filter} onClick={() => setFilter(null)} />
+      <FilterButton label="all genres" disabled={!filter} onClick={() => setFilter(null)} />
       {genres.map((g) => (
-        <FilterButton content={g} disabled={g === filter} onClick={() => setFilter(g)} key={g} />
+        <FilterButton label={g} disabled={g === filter} onClick={() => setFilter(g)} key={g} />
       ))}
 
       <table style={{ textAlign: 'left' }}>

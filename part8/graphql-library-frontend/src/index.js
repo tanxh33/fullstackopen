@@ -23,7 +23,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path }) => {
       console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-      if (message.includes('jwt expired')) {
+      if (message.includes('jwt expired') || message.includes('invalid token')) {
         localStorage.removeItem('library-user-token');
       }
     });

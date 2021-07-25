@@ -1,8 +1,8 @@
 import React from 'react';
 
-const FilterButton = ({ content, disabled, onClick }) => (
+const FilterButton = ({ label, disabled, onClick }) => (
   <button disabled={disabled} onClick={onClick} type="button">
-    {content}
+    {label}
   </button>
 );
 
