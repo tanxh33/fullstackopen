@@ -17,6 +17,7 @@ query {
       id
     }
     published
+    genres
     id
   }
 }

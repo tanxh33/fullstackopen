@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Book from './Book';
+import FilterButton from './FilterButton';
 
 const Books = ({ show, books }) => {
+  // Get a unique list of genres using a Set
+  let genres = new Set([]);
+  books.forEach((b) => {
+    b.genres.forEach((g) => genres.add(g));
+  });
+  genres = [...genres].sort();
+
+  const [filter, setFilter] = useState(null);
+
   if (!show) {
     return null;
   }
@@ -8,6 +19,11 @@ const Books = ({ show, books }) => {
   return (
     <div>
       <h2>books</h2>
+      <span>genres: </span>
+      <FilterButton content="all genres" disabled={!filter} onClick={() => setFilter(null)} />
+      {genres.map((g) => (
+        <FilterButton content={g} disabled={g === filter} onClick={() => setFilter(g)} key={g} />
+      ))}
 
       <table style={{ textAlign: 'left' }}>
         <thead>
@@ -15,15 +31,16 @@ const Books = ({ show, books }) => {
             <th>title</th>
             <th>author</th>
             <th>published</th>
+            <th>genres</th>
           </tr>
         </thead>
         <tbody>
           {books.map((b) => (
-            <tr key={b.title}>
-              <td>{b.title}</td>
-              <td>{b.author.name}</td>
-              <td>{b.published}</td>
-            </tr>
+            <Book
+              show={!filter || b.genres.includes(filter)}
+              book={b}
+              key={b.id}
+            />
           ))}
         </tbody>
       </table>

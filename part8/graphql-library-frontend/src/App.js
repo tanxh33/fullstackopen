@@ -7,6 +7,7 @@ import NewBook from './components/NewBook';
 import Notify from './components/Notify';
 import AuthorForm from './components/AuthorForm';
 import LoginForm from './components/LoginForm';
+import FilterButton from './components/FilterButton';
 
 const App = () => {
   const [token, setToken] = useState(null);
@@ -46,16 +47,16 @@ const App = () => {
   return (
     <div>
       <div>
-        <button disabled={page === 'authors'} onClick={() => setPage('authors')}>authors</button>
-        <button disabled={page === 'books'} onClick={() => setPage('books')}>books</button>
+        <FilterButton content="authors" disabled={page === 'authors'} onClick={() => setPage('authors')} />
+        <FilterButton content="books" disabled={page === 'books'} onClick={() => setPage('books')} />
         {token
           ? (
             <>
-              <button disabled={page === 'add'} onClick={() => setPage('add')}>add book</button>
-              <button disabled={page === 'logout'} onClick={() => logout()}>logout</button>
+              <FilterButton content="add book" disabled={page === 'add'} onClick={() => setPage('add')} />
+              <FilterButton content="logout" disabled={page === 'logout'} onClick={() => logout()} />
             </>
           )
-          : <button disabled={page === 'login'} onClick={() => setPage('login')}>login</button>}
+          : <FilterButton content="login" disabled={page === 'login'} onClick={() => setPage('login')} />}
       </div>
 
       <Notify notification={notification} />
