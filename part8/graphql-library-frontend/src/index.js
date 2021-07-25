@@ -21,9 +21,12 @@ const authLink = setContext((_, { headers }) => {
 // Error handling: https://www.apollographql.com/docs/react/data/error-handling/
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, locations, path }) => console.log(
-      `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-    ));
+    graphQLErrors.forEach(({ message, locations, path }) => {
+      console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+      if (message.includes('jwt expired')) {
+        localStorage.removeItem('library-user-token');
+      }
+    });
   }
 
   if (networkError) {
