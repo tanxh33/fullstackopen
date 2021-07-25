@@ -8,7 +8,7 @@ const Books = ({ show, books }) => {
   books.forEach((b) => {
     b.genres.forEach((g) => genres.add(g));
   });
-  genres = [...genres].sort();
+  genres = [...genres].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
   const [filter, setFilter] = useState(null);
 
