@@ -20,6 +20,9 @@
 /part7/country-hooks/node_modules/
 /part7/ultimate-hooks/node_modules/
 /part7/bloglist-extended/node_modules/
+/part8/graphql-library-backend/node_modules/
+/part8/graphql-library-backend/.env
+/part8/graphql-library-frontend/node_modules/
 
 /.pnp
 .pnp.js
