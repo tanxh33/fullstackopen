@@ -2,8 +2,8 @@
 // `Operation` is a type alias
 type Operation = 'multiply' | 'add' | 'divide';
 
-const calculator = (a: number, b: number, op: Operation): number => {
-  switch(op) {
+export const calculator = (a: number, b: number, op: Operation): number => {
+  switch (op) {
     case 'multiply':
       return a * b;
     case 'add':
@@ -14,7 +14,7 @@ const calculator = (a: number, b: number, op: Operation): number => {
     default:
       throw new Error('Operation is not multiply, add, or divide!');
   }
-}
+};
 
 try {
   calculator(1, 4, 'add');
@@ -22,6 +22,8 @@ try {
   calculator(1, 4, 'divide');
   calculator(1, 0, 'divide');
   // calculator(1, 2, 'yolo');
-} catch (e) {
-  console.error(`Something went wrong. Error message: ${e.message}`);
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    console.error(`Something went wrong. Error message: ${e.message}`);
+  }
 }

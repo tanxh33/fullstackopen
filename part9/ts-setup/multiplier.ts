@@ -12,20 +12,22 @@ const parseArguments = (args: Array<string>): MultiplyValues => {
     return {
       value1: Number(args[2]),
       value2: Number(args[3]),
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 const multiplicator = (a: number, b: number, printText: string) => {
   console.log(printText, a * b);
-}
+};
 
 try {
   const { value1, value2 } = parseArguments(process.argv);
   multiplicator(value1, value2, `Multiplied ${value1} and ${value2}, the result is:`);
   // multiplicator('how about a string?', 4, 'Multiplied a string and 4, the result is:');
-} catch (e) {
-  console.error('Error, something bad happened. Error message:', e.message);
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    console.error('Error, something bad happened. Error message:', e.message);
+  }
 }
