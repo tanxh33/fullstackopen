@@ -28,7 +28,7 @@ const parseExerciseArguments = (args: Array<string>): ExerciseInput => {
   }
 };
 
-const calculateExercises = (exercisePeriod: Array<number>, target: number): Result => {
+export const calculateExercises = (exercisePeriod: Array<number>, target: number): Result => {
   const averageTime = exercisePeriod.reduce((acc, curr) => acc + curr) / exercisePeriod.length;
   const timeDiff = averageTime - target;
 
