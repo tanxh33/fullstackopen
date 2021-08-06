@@ -23,6 +23,7 @@
 /part8/graphql-library-backend/node_modules/
 /part8/graphql-library-backend/.env
 /part8/graphql-library-frontend/node_modules/
+/part9/ts-setup/node_modules/
 
 /.pnp
 .pnp.js
