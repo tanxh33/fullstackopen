@@ -8,6 +8,7 @@ const Books = ({ show, books }) => {
   books.forEach((b) => {
     b.genres.forEach((g) => genres.add(g));
   });
+  // Sort genre list into alphabetical order
   genres = [...genres].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 
   const [filter, setFilter] = useState(null);
@@ -37,6 +38,8 @@ const Books = ({ show, books }) => {
         <tbody>
           {books.map((b) => (
             <Book
+              // Show all books if filter is null, but if there is a genre,
+              // we check if the book has that genre.
               show={!filter || b.genres.includes(filter)}
               book={b}
               key={b.id}
