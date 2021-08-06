@@ -64,6 +64,8 @@ try {
   const { target, exercisePeriod } = parseExerciseArguments(process.argv);
   const result = calculateExercises(exercisePeriod, target);
   console.log(result);
-} catch (e) {
-  console.error('Error, something bad happened. Error message:', e.message);
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    console.error('Error, something bad happened. Error message:', e.message);
+  }
 }

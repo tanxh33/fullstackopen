@@ -12,11 +12,11 @@ const parseBmiArguments = (args: Array<string>): BmiInput => {
     return {
       height: Number(inputs[0]),
       weight: Number(inputs[1]),
-    }
+    };
   } else {
     throw new Error('Input values were not numbers!');
   }
-}
+};
 
 export const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / Math.pow(height / 100, 2);
@@ -39,11 +39,13 @@ export const calculateBmi = (height: number, weight: number): string => {
     result = 'Obese (Class III)';
   }
   return `BMI: ${bmi.toFixed(3)}\n${result}`;
-}
+};
 
 try {
   const { height, weight } = parseBmiArguments(process.argv);
   console.log(calculateBmi(height, weight));
-} catch (e) {
-  console.error('Error, something bad happened. Error message:', e.message);
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    console.error('Error, something bad happened. Error message:', e.message);
+  }
 }
