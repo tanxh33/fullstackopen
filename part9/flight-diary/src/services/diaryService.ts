@@ -1,5 +1,5 @@
 import diaries from '../../data/diaries';
-import { DiaryEntry, NonSensitiveDiaryEntry } from '../types';
+import { DiaryEntry, NonSensitiveDiaryEntry, NewDiaryEntry } from '../types';
 
 // Import from diaries.json and do a type assertion.
 // Note that doing this means we are not really using
@@ -25,12 +25,22 @@ const getNonSensitiveEntries =
     );
   };
 
-const addEntry = () => {
-  return null;
+const addDiary = (entry: NewDiaryEntry): DiaryEntry => {
+  const newDiaryEntry = {
+    id: Math.max(...diaries.map((d) => d.id)) + 1,
+    ...entry,
+  };
+  diaries.push(newDiaryEntry);
+  return newDiaryEntry;
+};
+
+const findById = (id: number): DiaryEntry | undefined => {
+  return diaries.find((d) => d.id === id);
 };
 
 export default {
   getEntries,
   getNonSensitiveEntries,
-  addEntry
+  addDiary,
+  findById,
 };

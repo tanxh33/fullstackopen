@@ -27,6 +27,9 @@
 /part9/exercise-bmi/node_modules/
 /part9/flight-diary/node_modules/
 /part9/flight-diary/build/
+/part9/patientor-frontend/node_modules/
+/part9/patientor-backend/node_modules/
+/part9/patientor-backend/build/
 
 /.pnp
 .pnp.js
