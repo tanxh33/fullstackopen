@@ -26,6 +26,7 @@
 /part9/ts-setup/node_modules/
 /part9/exercise-bmi/node_modules/
 /part9/flight-diary/node_modules/
+/part9/flight-diary/build/
 
 /.pnp
 .pnp.js
