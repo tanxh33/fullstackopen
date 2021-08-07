@@ -1,0 +1,42 @@
+POST http://localhost:3003/calculate HTTP/1.1
+Content-Type: application/json
+
+{
+    "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+    "target": 2.5
+}
+
+###
+POST http://localhost:3003/calculate HTTP/1.1
+Content-Type: application/json
+
+{
+    "daily_exercises": ["1", "0", "2", "0", "3", "0", "2.5"],
+    "target": "2.5"
+}
+
+###
+POST http://localhost:3003/calculate HTTP/1.1
+Content-Type: application/json
+
+{
+    "daily_exercises": [],
+    "target": 2.5
+}
+
+###
+POST http://localhost:3003/calculate HTTP/1.1
+Content-Type: application/json
+
+{
+    "daily_exercises": [1, 2, 3]
+}
+
+###
+POST http://localhost:3003/calculate HTTP/1.1
+Content-Type: application/json
+
+{
+    "daily_exercises": [1, 2, 3],
+    "target": "excuse me"
+}
