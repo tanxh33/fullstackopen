@@ -25,6 +25,7 @@
 /part8/graphql-library-frontend/node_modules/
 /part9/ts-setup/node_modules/
 /part9/exercise-bmi/node_modules/
+/part9/flight-diary/node_modules/
 
 /.pnp
 .pnp.js
