@@ -1,0 +1,36 @@
+POST http://localhost:3001/api/patients HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Hermione Granger",
+  "dateOfBirth": "1979-11-19",
+  "ssn": "123456-7890",
+  "gender": "female",
+  "occupation": "Minister for Magic"
+}
+
+###
+
+POST http://localhost:3001/api/patients HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Sleazy Bastard",
+  "dateOfBirth": "fakedate",
+  "ssn": "123456-7890",
+  "gender": "nutter",
+  "occupation": "excuse me"
+}
+
+###
+
+POST http://localhost:3001/api/patients HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Sleazy Bastard",
+  "dateOfBirth": "1955-11-12",
+  "ssn": "123456-7890",
+  "gender": "nutter",
+  "occupation": "excuse me"
+}
