@@ -4,8 +4,23 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+interface WelcomeProps {
+  name: string;
+}
+
+const Welcome = (props: WelcomeProps) => {
+  return <h1>Hello, {props.name}</h1>
+}
+
+// const Welcome = ({ name }: {name: string}) => {
+//   return <h1>Hello, {name}</h1>
+// }
+
+const element = <Welcome name="Sara" />;
+
 ReactDOM.render(
   <React.StrictMode>
+    {element}
     <App />
   </React.StrictMode>,
   document.getElementById('root')
