@@ -30,6 +30,7 @@
 /part9/patientor-frontend/node_modules/
 /part9/patientor-backend/node_modules/
 /part9/patientor-backend/build/
+/part9/ts-react-app/node_modules/
 
 /.pnp
 .pnp.js
