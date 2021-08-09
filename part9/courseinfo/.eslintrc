@@ -10,6 +10,20 @@
     "plugin:@typescript-eslint/recommended",
     "airbnb-typescript"
   ],
+  // Resovles parseOptions.project compilation error:
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ], // Your TypeScript files extension
+      "parserOptions": {
+        "project": [
+          "./tsconfig.json"
+        ] // Specify it only for TypeScript files
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "react",
@@ -59,6 +73,7 @@
       "error"
     ],
     "@typescript-eslint/explicit-function-return-type": 0,
-    "@typescript-eslint/explicit-module-boundary-types": 0
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "linebreak-style": 0
   }
 }
