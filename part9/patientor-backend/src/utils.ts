@@ -49,11 +49,11 @@ const parseOccupation = (occupation: unknown): string => {
 };
 
 type PatientFields = {
-  name: unknown,
-  dateOfBirth: unknown,
-  ssn: unknown,
-  gender: unknown,
-  occupation: unknown
+  name: unknown;
+  dateOfBirth: unknown;
+  ssn: unknown;
+  gender: unknown;
+  occupation: unknown;
 };
 
 const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: PatientFields): NewPatient => {
@@ -63,6 +63,7 @@ const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: PatientFie
     ssn: parseSsn(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
+    entries: [],
   };
   return newPatient;
 };
